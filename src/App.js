@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import CrearIncidencia from './pages/CrearIncidencia';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
