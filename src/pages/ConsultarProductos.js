@@ -8,7 +8,7 @@ const ConsultarProductos = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [productos, setProductos] = useState([]);
-  const [versionElegida,setVersionElegida] = useState();
+  const [versionElegida, setVersionElegida] = useState();
 
   const contieneProducto = (arr, valor) => {
     return arr.some((value) => { return value.codigoProducto == valor.codigoProducto });
@@ -43,19 +43,19 @@ const ConsultarProductos = () => {
   };
 
   const onChangeSelectHandler = (version) => {
-      setVersionElegida(version);  
+    setVersionElegida(version);
   }
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
-    { field: 'nombre', headerName: 'Nombre', width: 150 },
+    { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
     {
-      field: 'version', headerName: 'Version', width: 150,
+      field: 'version', headerName: 'Version', sortable: false, width: 150,
       renderCell: (params) => {
         return (
           <Select
-            style={{minWidth: 120}}
+            style={{ minWidth: 120 }}
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
             value={versionElegida}
@@ -71,7 +71,7 @@ const ConsultarProductos = () => {
       }
     },
     {
-      field: 'acciones', headerName: 'Acciones', width: 300,
+      field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,
       renderCell: (params) => {
         const onVerTicketsHandler = (e) => {
           return alert('hola');
