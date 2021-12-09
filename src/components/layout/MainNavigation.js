@@ -44,7 +44,7 @@ const MainNavigation = () => {
                 onClose={() => setShowSoporte(false)}
                 TransitionComponent={Fade}
               >
-                <MenuItem onClick={() => redirectHandler(setShowSoporte,'/crear-incidencia')}>Crear ticket</MenuItem>
+                <MenuItem onClick={() => redirectHandler(setShowSoporte,'/crear-ticket')}>Crear ticket</MenuItem>
                 <MenuItem onClick={() => redirectHandler(setShowSoporte,'/consultar-tickets')}>Consultar tickets</MenuItem>
                 <MenuItem onClick={() => redirectHandler(setShowSoporte,'/consultar-productos')}>Consultar productos</MenuItem>
               </Menu>

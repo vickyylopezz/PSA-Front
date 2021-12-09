@@ -1,5 +1,5 @@
-import Card from '../UI/Card';
-import classes from './CrearIncidenciaForm.module.css';
+import Card from '../../UI/Card';
+import classes from './CrearTicketForm.module.css';
 
 const CrearIncidenciaForm = (props) => {
   function submitFormHandler(event) {

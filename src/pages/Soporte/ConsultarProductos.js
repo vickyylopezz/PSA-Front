@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import QuickFilteringGrid from '../components/common/DataGrid';
+import QuickFilteringGrid from '../../components/common/DataGrid';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import VerTicket from '../../components/soporte/verTicket/VerTicket';
 
 const ConsultarProductos = () => {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [error, setError] = useState(null);
+  // const [isLoaded, setIsLoaded] = useState(false);
   const [productos, setProductos] = useState([]);
-  const [versionElegida, setVersionElegida] = useState();
+  const [verTicket, setVerTicket] = useState(false);
+  const [productoElegido, setProductoElegido] = useState();
 
   const contieneProducto = (arr, valor) => {
-    return arr.some((value) => { return value.codigoProducto == valor.codigoProducto });
+    return arr.some((value) => { return value.codigoProducto === valor.codigoProducto });
   }
 
   const groupProducts = (data) => {
@@ -33,7 +35,8 @@ const ConsultarProductos = () => {
               id: d.id,
               version: d.version
             }
-          ]
+          ],
+          versionElegida: null
         }
         tempProductos.push(prod);
       }
@@ -42,8 +45,11 @@ const ConsultarProductos = () => {
     return tempProductos;
   };
 
-  const onChangeSelectHandler = (version) => {
-    setVersionElegida(version);
+  const onChangeSelectHandler = (version, idProducto,params) => {
+    params.row.versionElegida = {
+      idProducto:idProducto,
+      version: version
+    };
   }
 
   const columns = [
@@ -58,14 +64,13 @@ const ConsultarProductos = () => {
             style={{ minWidth: 120 }}
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
-            value={versionElegida}
+            value={params?.row?.versionElegida?.version}
           >
             {params.row.version.map((v) => {
               return (
-                <MenuItem onClick={() => onChangeSelectHandler(v.version)} value={v.id}>{v.version}</MenuItem>
+                <MenuItem onClick={() => onChangeSelectHandler(v.version, v.id,params)} value={v.id}>{v.version}</MenuItem>
               )
             })}
-
           </Select >
         )
       }
@@ -73,8 +78,9 @@ const ConsultarProductos = () => {
     {
       field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,
       renderCell: (params) => {
-        const onVerTicketsHandler = (e) => {
-          return alert('hola');
+        const onVerTicketsHandler = () => {
+          setProductoElegido(params.row.versionElegida)
+          setVerTicket(true);
         };
         return (
           <>
@@ -83,6 +89,7 @@ const ConsultarProductos = () => {
               color="primary"
               size="small"
               onClick={onVerTicketsHandler}
+              disabled={params?.row?.version === undefined}
             >
               Ver tickets
             </Button>
@@ -106,18 +113,21 @@ const ConsultarProductos = () => {
       .then(res => res.json())
       .then(
         (data) => {
-          setIsLoaded(true);
+          // setIsLoaded(true);
           setProductos(groupProducts(data));
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
+          // },
+          // (error) => {
+          //   setIsLoaded(true);
+          //   setError(error);
         }
       )
   }, [])
 
   return (
-    <QuickFilteringGrid data={productos} columns={columns} />
+    <>
+      {verTicket && <VerTicket idProducto={productoElegido.idProducto} version={productoElegido?.version} />}
+      {!verTicket && <QuickFilteringGrid data={productos} columns={columns} />}
+    </>
   )
 }
 export default ConsultarProductos;
