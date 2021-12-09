@@ -78,9 +78,9 @@ export default function QuickFilteringGrid(props) {
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
         const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
-        const filteredRows = props.data.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
+        const filteredRows = props?.data?.filter((row) => {
+            return Object?.keys(row).some((field) => {
+                return searchRegex.test(row[field]?.toString());
             });
         });
         setRows(filteredRows);
