@@ -105,6 +105,7 @@ export default function QuickFilteringGrid(props) {
                 }}
                 disableColumnMenu={true}
                 disableSelectionOnClick={true}
+                disableColumnSelector={true}
                 hideFooter={true}
                 autoHeight={true}
             />

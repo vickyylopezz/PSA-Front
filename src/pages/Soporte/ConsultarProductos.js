@@ -23,7 +23,8 @@ const ConsultarProductos = () => {
         const index = tempProductos.findIndex(value => value.codigoProducto === d.codigoProducto);
         tempProductos[index].version.push({
           id: d.id,
-          version: d.version
+          version: d.version,
+          codigoProducto: d.codigoProducto
         });
       } else {
         const prod = {
@@ -33,7 +34,8 @@ const ConsultarProductos = () => {
           version: [
             {
               id: d.id,
-              version: d.version
+              version: d.version,
+              codigoProducto: d.codigoProducto
             }
           ],
           versionElegida: null
@@ -45,9 +47,9 @@ const ConsultarProductos = () => {
     return tempProductos;
   };
 
-  const onChangeSelectHandler = (version, idProducto,params) => {
+  const onChangeSelectHandler = (version, codigoProducto,params) => {
     params.row.versionElegida = {
-      idProducto:idProducto,
+      codigoProducto:codigoProducto,
       version: version
     };
   }
@@ -57,7 +59,7 @@ const ConsultarProductos = () => {
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
     { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
     {
-      field: 'version', headerName: 'Version', sortable: false, width: 150,
+      field: 'version', headerName: 'Version', sortable: false, width: 130,
       renderCell: (params) => {
         return (
           <Select
@@ -68,7 +70,7 @@ const ConsultarProductos = () => {
           >
             {params.row.version.map((v) => {
               return (
-                <MenuItem onClick={() => onChangeSelectHandler(v.version, v.id,params)} value={v.id}>{v.version}</MenuItem>
+                <MenuItem onClick={() => onChangeSelectHandler(v.version, v.codigoProducto,params)} value={v.id}>{v.version}</MenuItem>
               )
             })}
           </Select >
@@ -89,7 +91,7 @@ const ConsultarProductos = () => {
               color="primary"
               size="small"
               onClick={onVerTicketsHandler}
-              disabled={params?.row?.version === undefined}
+              disabled={params?.row?.versionElegida === null}
             >
               Ver tickets
             </Button>
@@ -99,6 +101,7 @@ const ConsultarProductos = () => {
               size="small"
               style={{ marginLeft: 16 }}
               onClick={onVerTicketsHandler}
+              disabled={params?.row?.versionElegida === null}
             >
               Crear un nuevo ticket
             </Button>
@@ -125,7 +128,7 @@ const ConsultarProductos = () => {
 
   return (
     <>
-      {verTicket && <VerTicket idProducto={productoElegido.idProducto} version={productoElegido?.version} />}
+      {verTicket && <VerTicket codigoProducto={productoElegido.codigoProducto} version={productoElegido?.version} />}
       {!verTicket && <QuickFilteringGrid data={productos} columns={columns} />}
     </>
   )
