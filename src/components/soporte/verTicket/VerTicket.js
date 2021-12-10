@@ -51,6 +51,7 @@ const VerTicket = (props) => {
   }, [])
   return (
     <>
+      <h3>LiSTADO DE TICKETS - Producto {props.codigoProducto} (Versión {props.version})</h3>
       <QuickFilteringGrid data={tickets} columns={columns} />
       <Button variant="contained"
         color="primary"
