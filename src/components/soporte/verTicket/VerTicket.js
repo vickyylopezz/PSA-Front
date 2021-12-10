@@ -14,13 +14,19 @@ const VerTicket = (props) => {
         const onVerTicketsHandler = () => {
 
         };
+
+        const onEliminarTicketHandler = (id,codigoProducto,version) => {
+          fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${id}`, { method: 'DELETE' })
+          .then(() => obtenerTickets());
+        }
+        
         return (
           <>
             <Button
               variant="contained"
               color="error"
               size="small"
-              onClick={onVerTicketsHandler}
+              onClick={() => onEliminarTicketHandler(params.row.id,props.codigoProducto,props.version)}
             >
               Eliminar
             </Button>
@@ -39,8 +45,7 @@ const VerTicket = (props) => {
     }
   ]
 
-  const url = `https://aninfo-psa-soporte.herokuapp.com/producto/${props.codigoProducto}-${props.version}/ticket`
-  useEffect(() => {
+  const obtenerTickets = () => {
     fetch(url)
       .then(res => res.json())
       .then(
@@ -48,6 +53,11 @@ const VerTicket = (props) => {
           setTickets(data);
         }
       )
+  }
+
+  const url = `https://aninfo-psa-soporte.herokuapp.com/producto/${props.codigoProducto}-${props.version}/ticket`
+  useEffect(() => {
+    obtenerTickets();
   }, [])
   return (
     <>
