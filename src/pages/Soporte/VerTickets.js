@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import QuickFilteringGrid from '../../../components/common/DataGrid';
+import QuickFilteringGrid from '../../components/common/DataGrid';
 import Button from '@mui/material/Button';
+import { useHistory,useLocation } from "react-router-dom";
 
-const VerTicket = (props) => {
+const VerTickets = (props) => {
   const [tickets, setTickets] = useState([]);
+  let history = useHistory();
+  const location = useLocation();
+
   const columns = [
     { field: 'id', headerName: 'ID', sortable: false, width: 50 },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
@@ -26,7 +30,7 @@ const VerTicket = (props) => {
               variant="contained"
               color="error"
               size="small"
-              onClick={() => onEliminarTicketHandler(params.row.id,props.codigoProducto,props.version)}
+              onClick={() => onEliminarTicketHandler(params.row.id,location.state.codigoProducto,location.state.version)}
             >
               Eliminar
             </Button>
@@ -55,21 +59,21 @@ const VerTicket = (props) => {
       )
   }
 
-  const url = `https://aninfo-psa-soporte.herokuapp.com/producto/${props.codigoProducto}-${props.version}/ticket`
+  const url = `https://aninfo-psa-soporte.herokuapp.com/producto/${location.state.codigoProducto}-${location.state.version}/ticket`
   useEffect(() => {
     obtenerTickets();
   }, [])
   return (
     <>
-      <h3>LiSTADO DE TICKETS - Producto {props.codigoProducto} (Versión {props.version})</h3>
+      <h3>LiSTADO DE TICKETS - Producto {location.state.codigoProducto} (Versión {location.state.version})</h3>
       <QuickFilteringGrid data={tickets} columns={columns} />
       <Button variant="contained"
         color="primary"
         size="small"
         style={{ marginLeft: 16 }}
-        onClick={() => window.location.reload(false)}>Volver</Button>
+        onClick={() => history.push('/consultar-productos')}>Volver</Button>
     </>
   )
 };
 
-export default VerTicket;
+export default VerTickets;

@@ -22,10 +22,11 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { Form, Field } from 'react-final-form';
-import DateAdapter from '@mui/lab/AdapterDateFns';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
+import { useLocation } from "react-router-dom";
+
 
 const validate = values => {
   const errors = {};
@@ -48,6 +49,7 @@ const onSubmit = async values => {
 };
 
 const CrearIncidenciaForm = (props) => {
+  const location = useLocation();
   const [clients, setClients] = useState([]);
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
 
@@ -69,7 +71,7 @@ const CrearIncidenciaForm = (props) => {
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Crear Ticket
+        Crear Ticket - Producto {location.state.codigoProducto} (Versión {location.state.version})
       </Typography>
       <Form
         onSubmit={onSubmit}

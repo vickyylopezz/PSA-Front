@@ -3,14 +3,13 @@ import QuickFilteringGrid from '../../components/common/DataGrid';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import VerTicket from '../../components/soporte/verTicket/VerTicket';
+import { useHistory } from "react-router-dom";
 
 const ConsultarProductos = () => {
-  // const [error, setError] = useState(null);
-  // const [isLoaded, setIsLoaded] = useState(false);
+
   const [productos, setProductos] = useState([]);
-  const [verTicket, setVerTicket] = useState(false);
   const [productoElegido, setProductoElegido] = useState();
+  let history = useHistory();
 
   const contieneProducto = (arr, valor) => {
     return arr.some((value) => { return value.codigoProducto === valor.codigoProducto });
@@ -47,9 +46,9 @@ const ConsultarProductos = () => {
     return tempProductos;
   };
 
-  const onChangeSelectHandler = (version, codigoProducto,params) => {
+  const onChangeSelectHandler = (version, codigoProducto, params) => {
     params.row.versionElegida = {
-      codigoProducto:codigoProducto,
+      codigoProducto: codigoProducto,
       version: version
     };
   }
@@ -70,7 +69,7 @@ const ConsultarProductos = () => {
           >
             {params.row.version.map((v) => {
               return (
-                <MenuItem onClick={() => onChangeSelectHandler(v.version, v.codigoProducto,params)} value={v.id}>{v.version}</MenuItem>
+                <MenuItem onClick={() => onChangeSelectHandler(v.version, v.codigoProducto, params)} value={v.id}>{v.version}</MenuItem>
               )
             })}
           </Select >
@@ -80,10 +79,30 @@ const ConsultarProductos = () => {
     {
       field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,
       renderCell: (params) => {
-        const onVerTicketsHandler = () => {
+        const onVerTicketsHandler = (event) => {
+          event.preventDefault();
           setProductoElegido(params.row.versionElegida)
-          setVerTicket(true);
+          history.push({
+            pathname: '/ver-tickets',
+            state: {
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
         };
+
+        const onCrearTicketHandler = (event) => {
+          event.preventDefault();
+          setProductoElegido(params.row.versionElegida)
+          history.push({
+            pathname: '/crear-ticket',
+            state: {
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
+        }
+
         return (
           <>
             <Button
@@ -99,7 +118,7 @@ const ConsultarProductos = () => {
               color="primary"
               size="small"
               style={{ marginLeft: 16 }}
-              onClick={onVerTicketsHandler}
+              onClick={onCrearTicketHandler}
             >
               Crear un nuevo ticket
             </Button>
@@ -126,8 +145,8 @@ const ConsultarProductos = () => {
 
   return (
     <>
-      {verTicket && <VerTicket codigoProducto={productoElegido.codigoProducto} version={productoElegido?.version} />}
-      {!verTicket && <QuickFilteringGrid data={productos} columns={columns} />}
+      {/* {verTicket && <VerTicket codigoProducto={productoElegido.codigoProducto} version={productoElegido?.version} />} */}
+      <QuickFilteringGrid data={productos} columns={columns} />
     </>
   )
 }
