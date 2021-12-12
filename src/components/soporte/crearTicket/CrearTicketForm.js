@@ -1,8 +1,6 @@
 import react, { useState, useEffect } from 'react';
 import {
   MuiPickersUtilsProvider,
-  TimePicker,
-  DatePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Autocomplete } from '@mui/material';
@@ -24,6 +22,10 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { Form, Field } from 'react-final-form';
+import DateAdapter from '@mui/lab/AdapterDateFns';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MobileDatePicker from '@mui/lab/MobileDatePicker';
 
 const validate = values => {
   const errors = {};
@@ -45,54 +47,13 @@ const onSubmit = async values => {
   window.alert(JSON.stringify(values, 0, 2));
 };
 
-const TimePickerWrapper = (props) => {
-  const {
-    input: { name, onChange, value, ...restInput },
-    meta,
-    ...rest
-  } = props;
-  const showError =
-    ((meta.submitError && !meta.dirtySinceLastSubmit) || meta.error) &&
-    meta.touched;
-
-  return (
-    <TimePicker
-      {...rest}
-      name={name}
-      helperText={showError ? meta.error || meta.submitError : undefined}
-      error={showError}
-      inputProps={restInput}
-      onChange={onChange}
-      value={value === '' ? null : value}
-    />
-  );
-}
-
-const DatePickerWrapper = (props) => {
-  const {
-    input: { name, onChange, value, ...restInput },
-    meta,
-    ...rest
-  } = props;
-  const showError =
-    ((meta.submitError && !meta.dirtySinceLastSubmit) || meta.error) &&
-    meta.touched;
-
-  return (
-    <DatePicker
-      {...rest}
-      name={name}
-      helperText={showError ? meta.error || meta.submitError : undefined}
-      error={showError}
-      inputProps={restInput}
-      onChange={onChange}
-      value={value === '' ? null : value}
-    />
-  );
-}
-
 const CrearIncidenciaForm = (props) => {
   const [clients, setClients] = useState([]);
+  const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
+
+  const handleChange = (newValue) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
     fetch("https://aninfo-psa-soporte.herokuapp.com/cliente")
@@ -141,7 +102,7 @@ const CrearIncidenciaForm = (props) => {
                     label="Titulo del ticket"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{ marginTop: 16 }}>
                   <Field
                     name="descripcion"
                     fullWidth
@@ -152,7 +113,7 @@ const CrearIncidenciaForm = (props) => {
                     label="Descripción del ticket"
                   />
                 </Grid>
-                <Grid item xs={6} style={{ marginTop: 16 }}>
+                <Grid item xs={5} style={{ marginTop: 32 }}>
                   <InputLabel required variant="standard" htmlFor="estado">
                     Estado
                   </InputLabel>
@@ -171,7 +132,8 @@ const CrearIncidenciaForm = (props) => {
                     <MenuItem value="Finalizado"> Finalizado</MenuItem>
                   </Select>
                 </Grid>
-                <Grid item xs={6} item style={{ marginTop: 16 }}>
+                <Grid item xs={2}/>
+                <Grid item xs={5} item style={{ marginTop: 32 }}>
                   <InputLabel required variant="standard" htmlFor="prioridad">
                     Prioridad
                   </InputLabel>
@@ -199,19 +161,19 @@ const CrearIncidenciaForm = (props) => {
                     renderInput={(params) => <TextField {...params} label="Cliente" />}
                   />
                 </Grid>
-                <MuiPickersUtilsProvider item style={{ marginTop: 16 }} utils={DateFnsUtils}>
-                  <Grid item xs={6}>
-                    <Field
-                      name="fechaCreacion"
-                      component={DatePickerWrapper}
-                      fullWidth
-                      margin="normal"
-                      label="Fecha de creación"
-                    />
-                  </Grid>
-                  <Grid item xs={6} />
-                </MuiPickersUtilsProvider>
-                <Grid item style={{ marginTop: 16 }}>
+                <LocalizationProvider item dateAdapter={AdapterDateFns}>
+                    <Grid item style={{ marginTop: 32 }} xs={6}>
+                      <MobileDatePicker
+                        label="Fecha creación"
+                        inputFormat="MM/dd/yyyy"
+                        value={value}
+                        onChange={handleChange}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Grid>
+                    <Grid item xs={6} />
+                </LocalizationProvider>
+                <Grid item style={{ marginTop: 32 }}>
                   <Button
                     type="button"
                     variant="contained"
@@ -221,7 +183,7 @@ const CrearIncidenciaForm = (props) => {
                     Reset
                   </Button>
                 </Grid>
-                <Grid item style={{ marginTop: 16 }}>
+                <Grid item style={{ marginTop: 32, marginLeft:16 }}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -234,9 +196,10 @@ const CrearIncidenciaForm = (props) => {
               </Grid>
             </Paper>
           </form>
-        )}
+        )
+        }
       />
-    </div>
+    </div >
   );
 
 };
