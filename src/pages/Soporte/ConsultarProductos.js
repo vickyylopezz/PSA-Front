@@ -91,7 +91,6 @@ const ConsultarProductos = () => {
               color="primary"
               size="small"
               onClick={onVerTicketsHandler}
-              disabled={params?.row?.versionElegida === null}
             >
               Ver tickets
             </Button>
@@ -101,7 +100,6 @@ const ConsultarProductos = () => {
               size="small"
               style={{ marginLeft: 16 }}
               onClick={onVerTicketsHandler}
-              disabled={params?.row?.versionElegida === null}
             >
               Crear un nuevo ticket
             </Button>
