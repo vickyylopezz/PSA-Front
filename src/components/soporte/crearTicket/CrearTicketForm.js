@@ -51,7 +51,8 @@ const CrearIncidenciaForm = (props) => {
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
   const [tareas, setTareas] = useState([]);
   const [esError, setEsError] = useState(false);
-
+  const codigoProducto = location.state.codigoProducto;
+  const version = location.state.version;
   const handleChange = (newValue) => {
     setValue(newValue);
   };
@@ -65,21 +66,42 @@ const CrearIncidenciaForm = (props) => {
         }
       )
 
-      fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
+    fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
       .then(res => res.json())
       .then(
         (data) => {
           setPersonasAsignadas(data);
         }
       )
-      
+
   }, [])
+
+  const crearTicket = () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        title: "un titulo",
+        clienteId: 1,
+        descripcion: "una descripcion",
+        estado: "Iniciado",
+        fechaCreacion: Date.now().toString(),
+        fechaFinalizacion: value.toString(),
+        personaAsignadaDni: "11231564",
+        severidadId: 1,
+        tipo: esError ? "error" : "consulta",
+      })
+    };
+    fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket`, requestOptions)
+      .then(response => response.json())
+      .then(data => this.setState({ postId: data.id }));
+  }
 
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Crear Ticket - Producto {location.state.codigoProducto} (Versión {location.state.version})
+        Crear Ticket - Producto {codigoProducto} (Versión {version})
       </Typography>
       <Form
         onSubmit={onSubmit}
@@ -225,8 +247,9 @@ const CrearIncidenciaForm = (props) => {
                     color="primary"
                     type="submit"
                     disabled={submitting}
+                    onClick={() => crearTicket()}
                   >
-                    Submit
+                    Crear ticket
                   </Button>
                 </Grid>
               </Grid>
