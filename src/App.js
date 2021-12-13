@@ -2,11 +2,12 @@ import { Route, Switch } from 'react-router-dom';
 import CrearTicket from './pages/Soporte/CrearTicket';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import CargaDeHoras from './pages/CargaDeHoras';
+import CargaDeHoras from './pages/Recursos/CargaDeHoras';
 import ConsultarProductos from './pages/Soporte/ConsultarProductos';
 import ConsultarTickets from './pages/Soporte/ConsultarTickets';
 import VerTicket from './pages/Soporte/VerTickets';
 import Layout from './components/layout/Layout';
+
 
 function App() {
   return (
