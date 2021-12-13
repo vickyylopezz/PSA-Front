@@ -47,6 +47,7 @@ const onSubmit = async values => {
 const CrearIncidenciaForm = (props) => {
   const location = useLocation();
   const [clients, setClients] = useState([]);
+  const [personasAsignadas, setPersonasAsignadas] = useState([]);
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
   const [tareas, setTareas] = useState([]);
   const [esError, setEsError] = useState(false);
@@ -63,6 +64,15 @@ const CrearIncidenciaForm = (props) => {
           setClients(data);
         }
       )
+
+      fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
+      .then(res => res.json())
+      .then(
+        (data) => {
+          setPersonasAsignadas(data);
+        }
+      )
+      
   }, [])
 
   return (
@@ -163,17 +173,25 @@ const CrearIncidenciaForm = (props) => {
                   </Grid>
                   <Grid item xs={6} />
                 </LocalizationProvider>
-                <Grid item xs={12} item style={{ marginTop: 16 }}>
+                <Grid item xs={6} item style={{ marginTop: 16 }}>
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
                     options={clients}
                     getOptionLabel={(option) => option.razonSocial}
-                    sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Cliente" />}
                   />
                 </Grid>
-                { esError &&
+                <Grid item xs={6} item style={{ marginTop: 16 }}>
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={personasAsignadas}
+                    getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
+                    renderInput={(params) => <TextField {...params} label="Persona asignada" />}
+                  />
+                </Grid>
+                {esError &&
                   <Grid item xs={12} item style={{ marginTop: 16 }}>
                     <Autocomplete
                       multiple
