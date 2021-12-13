@@ -137,9 +137,11 @@ const CrearIncidenciaForm = (props) => {
                     formControlProps={{ fullWidth: true }}
                   // onChange={handleChange}
                   >
-                    <MenuItem value="Iniciado">Iniciado</MenuItem>
-                    <MenuItem value="NoIniciado">No Iniciado</MenuItem>
-                    <MenuItem value="Finalizado"> Finalizado</MenuItem>
+                    <MenuItem value="Abierto">Abierto</MenuItem>
+                    <MenuItem value="EnProgreso">En Progreso</MenuItem>
+                    <MenuItem value="ALaEsperaDeDesarrollo"> A la espera de desarrollo</MenuItem>
+                    <MenuItem value="ALaEsperaDelCliente"> A la espera del cliente</MenuItem>
+                    <MenuItem value="Cerrado"> Cerrado</MenuItem>
                   </Select>
                 </Grid>
                 <Grid item xs={2} />
@@ -157,8 +159,10 @@ const CrearIncidenciaForm = (props) => {
                     formControlProps={{ fullWidth: true }}
                   // onChange={handleChange}
                   >
-                    <MenuItem value="S1">S1</MenuItem>
-                    <MenuItem value="S2">S2</MenuItem>
+                    <MenuItem value="1">1</MenuItem>
+                    <MenuItem value="2">2</MenuItem>
+                    <MenuItem value="3">3</MenuItem>
+                    <MenuItem value="4">4</MenuItem>
                   </Select>
                 </Grid>
                 <LocalizationProvider item dateAdapter={AdapterDateFns}>
