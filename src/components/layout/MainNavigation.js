@@ -99,7 +99,20 @@ export default function MainNavigation() {
               <MenuItem onClick={() => redirectHandler(setShowGestionProyectos, '/ejemplo')}>Ejemplo1</MenuItem>
               <MenuItem onClick={() => redirectHandler(setShowGestionProyectos, '/ejemplo')}>Ejemplo2</MenuItem>
             </Menu>
+
+            <Button
+                id="fade-menu-recursos"
+                aria-controls="fade-menu"
+                aria-haspopup="true"
+                color="inherit"  
+                onClick={() => redirectHandler(setShowGestionProyectos,'cargar-horas')}
+              >
+                Recursos
+              </Button>
+
+
           </div>
+
         </Toolbar>
       </AppBar >
     </div >
