@@ -80,6 +80,18 @@ const MainNavigation = () => {
               </div>
             </NavLink>
           </li>
+          <li>
+            <div>
+              <Button
+                id="fade-button"
+                aria-controls="fade-menu"
+                aria-haspopup="true"   
+                onClick={() => redirectHandler(setShowGestionProyectos,'cargar-horas')}
+              >
+                Recursos
+              </Button>
+            </div>        
+          </li>
         </ul>
       </nav>
     </header>

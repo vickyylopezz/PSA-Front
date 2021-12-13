@@ -4,6 +4,7 @@ import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import ConsultarProductos from './pages/ConsultarProductos';
 import ConsultarTickets from './pages/ConsultarTickets';
+import CargaDeHoras from './pages/CargaDeHoras';
 import Layout from './components/layout/Layout';
 
 function App() {
@@ -15,6 +16,9 @@ function App() {
         </Route>
         <Route path='/crear-incidencia'>
           <CrearIncidencia />
+        </Route>
+        <Route path='/cargar-horas'>
+          <CargaDeHoras />
         </Route>
         <Route path='/consultar-tickets'>
           <ConsultarTickets />
