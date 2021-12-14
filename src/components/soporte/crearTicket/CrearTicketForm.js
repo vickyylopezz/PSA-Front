@@ -168,16 +168,16 @@ const CrearIncidenciaForm = (props) => {
                 </Grid>
                 <Grid item xs={2} />
                 <Grid item xs={5} item style={{ marginTop: 32 }}>
-                  <InputLabel required variant="standard" htmlFor="prioridad">
-                    Prioridad
+                  <InputLabel required variant="standard" htmlFor="severidad">
+                    Severidad
                   </InputLabel>
                   <Select
                     required
                     fullWidth
-                    name="prioridad"
+                    name="severidad"
                     labelId="demo-simple-select-label"
-                    id="prioridad"
-                    label="Prioridad"
+                    id="severidad"
+                    label="Severidad"
                     formControlProps={{ fullWidth: true }}
                   // onChange={handleChange}
                   >
