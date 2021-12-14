@@ -7,7 +7,8 @@ import ConsultarProductos from './pages/Soporte/ConsultarProductos';
 import ConsultarTickets from './pages/Soporte/ConsultarTickets';
 import VerTicket from './pages/Soporte/VerTickets';
 import Layout from './components/layout/Layout';
-
+import ConsultarProyectos from './pages/Proyectos/ConsultarProyectos';
+import CrearProyecto from './pages/Proyectos/CrearProyecto';
 
 function App() {
   return (
@@ -30,6 +31,12 @@ function App() {
         </Route>
         <Route path='/consultar-productos'>
           <ConsultarProductos />
+        </Route>
+        <Route path='/consultar-proyectos'>
+          <ConsultarProyectos />
+        </Route>
+        <Route path='/crear-proyecto'>
+          <CrearProyecto />
         </Route>
         <Route path='*'>
           <NotFound />

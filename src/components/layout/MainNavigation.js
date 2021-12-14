@@ -81,25 +81,10 @@ export default function MainNavigation() {
               aria-controls="fade-menu"
               aria-haspopup="true"
               color="inherit"
-              aria-expanded={showGestionProyectos ? 'true' : undefined}
-              onClick={(event) => setShowGestionProyectos(event.currentTarget)}
-            >
+              onClick={() => redirectHandler(setShowGestionProyectos,'/consultar-proyectos')}
+              >
               Gestion de proyectos
             </Button>
-            <Menu
-              id="fade-menu-soporte"
-              MenuListProps={{
-                'aria-labelledby': 'fade-button',
-              }}
-              anchorEl={showGestionProyectos}
-              open={showGestionProyectos}
-              onClose={() => setShowGestionProyectos(false)}
-              TransitionComponent={Fade}
-            >
-              <MenuItem onClick={() => redirectHandler(setShowGestionProyectos, '/ejemplo')}>Ejemplo1</MenuItem>
-              <MenuItem onClick={() => redirectHandler(setShowGestionProyectos, '/ejemplo')}>Ejemplo2</MenuItem>
-            </Menu>
-
             <Button
                 id="fade-menu-recursos"
                 aria-controls="fade-menu"
