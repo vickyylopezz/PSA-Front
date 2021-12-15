@@ -2,7 +2,8 @@ import { Route, Switch } from 'react-router-dom';
 import CrearTicket from './pages/Soporte/CrearTicket';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import CargaDeHoras from './pages/Recursos/CargaDeHoras';
+import ConsultarHoras from './pages/Recursos/ConsultarHoras';
+import CargarHoras from './pages/Recursos/CargarHoras';
 import ConsultarProductos from './pages/Soporte/ConsultarProductos';
 import ConsultarTickets from './pages/Soporte/ConsultarTickets';
 import VerTicket from './pages/Soporte/VerTickets';
@@ -23,8 +24,11 @@ function App() {
         <Route path='/crear-ticket'>
           <CrearTicket />
         </Route>
-        <Route path='/cargar-horas'>
-          <CargaDeHoras />
+        <Route path='/consultar-horas'>
+          <ConsultarHoras />
+        </Route> 
+        <Route path='/carga-horas'>
+          <CargarHoras />
         </Route>
         <Route path='/consultar-tickets'>
           <ConsultarTickets />

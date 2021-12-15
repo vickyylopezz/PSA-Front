@@ -90,7 +90,7 @@ export default function MainNavigation() {
                 aria-controls="fade-menu"
                 aria-haspopup="true"
                 color="inherit"  
-                onClick={() => redirectHandler(setShowGestionProyectos,'cargar-horas')}
+                onClick={() => redirectHandler(setShowGestionProyectos,'consultar-horas')}
               >
                 Recursos
               </Button>
