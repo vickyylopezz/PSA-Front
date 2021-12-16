@@ -64,8 +64,7 @@ const CargaDeHorasForm = (props) => {
         setValue(newValue);
     };
     useEffect(() => {
-        fetch("")
-        //fetch("https://modulo-proyectos-squad7.herokuapp.com/proyectos/getProyectos") 
+        fetch("https://modulo-proyectos-squad7.herokuapp.com/proyectos/getProyectos") 
           .then(res => res.json())
           .then(
             (data) => {
@@ -73,6 +72,23 @@ const CargaDeHorasForm = (props) => {
             }
           )
       }, [])
+    const crearCargaHoras = () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                proyecto_id: 1,
+                tarea_id: 2,
+                legajo: 104222,
+                cantidad_horas: 4,
+                fecha: Date.now().toString(),
+            })
+        };
+        fetch('https://api-recursos.herokuapp.com/docs#/Recursos/cargar_Horas_Usuarios', requestOptions)
+        .then(response => response.json())
+        .then(data => this.setState({ postId: data.id }));
+    }    
+
       return (
         <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
             <CssBaseline />
@@ -136,6 +152,7 @@ const CargaDeHorasForm = (props) => {
                                         color="primary"
                                         type="submit"
                                         disabled={submitting}
+                                        onClick={() => crearCargaHoras()}
                                     >
                                         Cargar
                                     </Button>

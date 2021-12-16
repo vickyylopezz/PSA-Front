@@ -150,6 +150,7 @@ export default function CustomPaginationActionsTable() {
             <TableCell align="right">Tarea</TableCell>
             <TableCell align="right">Horas </TableCell>
             <TableCell align="right">Fecha </TableCell>
+            <TableCell align="center">Operaciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
