@@ -56,9 +56,9 @@ const ConsultarProductos = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
-    { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
+    { field: 'nombre', headerName: 'Nombre', sortable: false, flex:1 },
     {
-      field: 'version', headerName: 'Version', sortable: false, width: 130,
+      field: 'version', headerName: 'Version', sortable: false, flex: 1,
       renderCell: (params) => {
         return (
           <Select
@@ -77,7 +77,7 @@ const ConsultarProductos = () => {
       }
     },
     {
-      field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,
+      field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1,
       renderCell: (params) => {
         const onVerTicketsHandler = (event) => {
           event.preventDefault();
@@ -108,7 +108,7 @@ const ConsultarProductos = () => {
             <Button
               variant="contained"
               color="primary"
-              size="small"
+              size="auto"
               onClick={onVerTicketsHandler}
               disabled = {params.row.versionElegida == null}
             >
@@ -117,10 +117,10 @@ const ConsultarProductos = () => {
             <Button
               variant="contained"
               color="primary"
-              size="small"
+              size="auto"
               style={{ marginLeft: 16 }}
               onClick={onCrearTicketHandler}
-              disabled = {params.row.versionElegida == null}
+              disabled = {params.row.versionElegida == null}  
             >
               Crear un nuevo ticket
             </Button>

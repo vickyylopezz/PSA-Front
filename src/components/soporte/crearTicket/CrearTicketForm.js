@@ -66,13 +66,13 @@ const CrearIncidenciaForm = (props) => {
         }
       )
 
-    fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
-      .then(res => res.json())
-      .then(
-        (data) => {
-          setPersonasAsignadas(data);
-        }
-      )
+    // fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
+    //   .then(res => res.json())
+    //   .then(
+    //     (data) => {
+    //       setPersonasAsignadas(data);
+    //     }
+    //   )
 
   }, [])
 
@@ -251,7 +251,7 @@ const CrearIncidenciaForm = (props) => {
                     color="primary"
                     type="submit"
                     disabled={submitting}
-                    onClick={() => crearTicket()}
+                    onClick={() => crearTicket}
                   >
                     Crear ticket
                   </Button>
