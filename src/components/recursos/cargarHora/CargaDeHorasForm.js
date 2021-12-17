@@ -55,41 +55,56 @@ const validate = values => {
     return today;
 }
 
+
 const CargaDeHorasForm = (props) => {
     const location = useLocation();
     const [proyectos, setProyectos] = useState([]);
     const [value, setValue] = React.useState(diaHoy);
     const [tareas, setTareas] = useState([]);
+    const [proyecto_id , setProyecto_id]= useState([]);
+    const [tarea_id , setTarea_id]= useState([]);
+    const [fecha_ingresada , setfecha]= useState(Date.now());
+    const [cantidad_horas , setHoras]= useState(Date.now());
     const handleChange = (newValue) => {
         setValue(newValue);
     };
     useEffect(() => {
-        fetch("https://modulo-proyectos-squad7.herokuapp.com/proyectos/getProyectos") 
-          .then(res => res.json())
-          .then(
+        fetch("https://modulo-proyectos-squad7.herokuapp.com/proyectos")
+        .then(res => res.json())
+        .then(
+          (data) => {
+            setProyectos(data);
+          }
+        )
+
+    }, [])
+
+    useEffect(() => { 
+        fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${proyecto_id}/tareas`)
+        .then(res => res.json())
+        .then(
             (data) => {
-              setProyectos(data);
+                setTareas(data);
             }
-          )
-      }, [])
+        )
+    }, [])
+    const guardarProyecto = (value) => {
+          setProyecto_id(value);
+      }
     const crearCargaHoras = () => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                proyecto_id: 1,
-                tarea_id: 2,
-                legajo: 104222,
-                cantidad_horas: 4,
-                fecha: Date.now().toString(),
-            })
+            headers: { 'Content-Type': 'application/json' }
         };
-        fetch('https://api-recursos.herokuapp.com/docs#/Recursos/cargar_Horas_Usuarios', requestOptions)
-        .then(response => response.json())
-        .then(data => this.setState({ postId: data.id }));
+        
+        fetch(`https://api-recursos.herokuapp.com/recursos/${proyecto_id}/${tarea_id}/cargarHoras/1?cantidad_horas=${cantidad_horas}&fecha=${fecha_ingresada.toString()}`, requestOptions)
+            .then(response => response.json())
+            .then(data => this.setState({ postId: data.id }));
     }    
-
-      return (
+    
+    
+    
+    return (
         <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
             <CssBaseline />
             <Typography variant="h5" align="center" component="h2" gutterBottom>
@@ -106,11 +121,15 @@ const CargaDeHorasForm = (props) => {
                                 <Grid item xs={12} item style={{ marginTop: 16 }}>
                                     <Autocomplete
                                         disablePortal
-                                        id="combo-box-demo"
+                                        id="proyectoo"
                                         options={proyectos}
-                                        getOptionLabel={(option) => option.nombre} //Cambiar por legajo personas
+                                        getOptionLabel={(options) => options.id } //Cambiar por legajo personas
                                         sx={{ width: 300 }}
-                                        renderInput={(params) => <TextField {...params} label="Proyecto *" />}
+                                        value = {proyecto_id}
+                                        onChange={(_event, asd) => {
+                                            setProyecto_id(asd);
+                                          }}
+                                        renderInput={(params) => <TextField {...params} label="Proyecto" />}
                                     />
                                 </Grid>
                                 <Grid item xs={12} item style={{ marginTop: 16 }}>
@@ -118,7 +137,7 @@ const CargaDeHorasForm = (props) => {
                                         disablePortal
                                         id="combo-box-demo"
                                         options={tareas}
-                                        getOptionLabel={(option) => option.nombre} //Cambiar por legajo personas
+                                        getOptionLabel={(options) => options.nombre} //Cambiar por legajo personas
                                         sx={{ width: 300 }}
                                         renderInput={(params) => <TextField {...params} label="Tareas *" />}
                                     />
@@ -127,10 +146,8 @@ const CargaDeHorasForm = (props) => {
                                     <Grid item style={{ marginTop: 32 }} xs={6}>
                                         <MobileDatePicker
                                             label="Fecha"
-                                            inputFormat="dd/MM/yyyy"
+                                            inputFormat="yyyy-MM-dd"
                                             value={value}
-                                            onChange={handleChange}
-                                            disabled
                                             renderInput={(params) => <TextField {...params} />}
                                         />
                                     </Grid>
@@ -168,3 +185,5 @@ const CargaDeHorasForm = (props) => {
 };
 
 export default CargaDeHorasForm;
+
+

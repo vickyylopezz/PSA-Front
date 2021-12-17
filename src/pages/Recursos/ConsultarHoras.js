@@ -93,7 +93,7 @@ Tenmos id de usuario -> pedir las horas-> id de proyectos y Tareay tenemos la fe
 Pedir cuales nos solos proyectos y las tareas con los ids (pedir nombre)
 */
 const rows = [
-  createData('PSA', 'Resolver tickest', 4, 15),
+  createData('PSA', 'Resolver tickest', 4, '15-12-21'),
   createData('PSA', 'Tarea 1', 3, 1),
   createData('Samkert', 'Tarea 2', 16, 1),
   createData('PSAA', 'Tarea 3', 6,1),
