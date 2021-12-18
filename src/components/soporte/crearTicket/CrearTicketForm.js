@@ -81,7 +81,7 @@ const CrearIncidenciaForm = (props) => {
 
   const handleFechaFinalizacionChange = (newValue) => {
     const date = formatDate(newValue);
-    setFechaFinalizacion(newValue);
+    setFechaFinalizacion(date);
   };
 
   const obtenerClientes = () => {
