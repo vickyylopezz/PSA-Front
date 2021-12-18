@@ -18,26 +18,41 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 
 const VerProyecto = (props) => {
   const [tareas, setTareas] = useState([]);
   const [tareaElegida, setTareaElegida] = useState();
-  const [open, setOpen] = React.useState(false);
-  const [lider, setLider] = useState('');
-
+  const [lider, setLider] = useState([]);
+  const [personasAsignadas, setPersonasAsignadas] = useState([]);
   let history = useHistory();
   const location = useLocation();
+  let nombre;
+  let apellido;
+  const [showModal, setShowModal] = useState(false);
+  const [proyectoABorrar, setProyectoABorrar] = useState(null);
+
 
   useEffect(() => {
-    fetch('https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados?legajo=${location.state.liderProyecto}') 
+    fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados?legajo=${location.state.liderProyecto}`) 
       .then(res => res.json())
       .then(
         (data) => {
           setLider(data);
         }
       )
-  }, [])
+  },[])
+
+  useEffect(() => {
+    fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados`) 
+      .then(res => res.json())
+      .then(
+        (data) => {
+          setPersonasAsignadas(data);
+        }
+      )
+  },[])
 
   const columns = [
     
@@ -45,7 +60,26 @@ const VerProyecto = (props) => {
     { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
     { field: 'descripcion', headerName: 'Descripción', sortable: false, width: 200 },
     { field: 'estado', headerName: 'Estado', sortable: false, width: 150 },
-    { field: 'legajoPersonaAsignada', headerName: 'Legajo', sortable: false, width: 150 },
+    { field: 'legajoPersonaAsignada', headerName: 'Legajo', sortable: false, width: 150, 
+    renderCell: (params) => {
+      return (       
+          personasAsignadas.map((s) => {
+            if(s.legajo == params.row.legajoPersonaAsignada){
+              nombre= s.Nombre;
+              apellido = s.Apellido;
+              return (
+                <Typography fontSize={'0.875rem'}>{s.Nombre} {s.Apellido} </Typography>
+              )
+            }
+            
+          })
+        
+        
+        
+      )
+    }
+    },
+    
     { field: 'ticket', headerName: 'Ticket', sortable: false, width: 170,
     renderCell: (params) => {
       return (
@@ -56,7 +90,6 @@ const VerProyecto = (props) => {
                    color="primary"
                    size="small"
                    style={{ marginLeft: 16 }}
-                   //onClick={onVerTicketsHandler}
                  >
                    Ver Ticket
                  </Button>
@@ -71,7 +104,6 @@ const VerProyecto = (props) => {
     renderCell: (params) => {
         const onVerTareaHandler = (event) => {
          event.preventDefault();
-         setTareaElegida(params.row.proyectoElegido)
          history.push({
            pathname: '/ver-tarea',
            state: {
@@ -113,25 +145,25 @@ const VerProyecto = (props) => {
       )
   }
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleCloseEliminar = () => {
-    setOpen(false);
-    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${location.state.codigoProyecto}`, { method: 'DELETE' })
-    .then(() => history.push('/consultar-proyectos'));
-  }
-
-  const handleCloseNoEliminar = () => {
-    setOpen(false);
+  const onEliminarProyectoModalHandler = () => {
+    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${proyectoABorrar.id}`, { method: 'DELETE' })
+      .then(() => history.push('/consultar-proyectos'));
   }
 
   const onEliminarProyectoHandler = (id) => {
-    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${location.state.codigoProyecto}`, { method: 'DELETE' })
-    // .then(() => history.push('/consultar-proyectos'));
-    .then(() => handleClickOpen);
+    setShowModal(true);
+    setProyectoABorrar({
+      id: id,
+    })
+  }
 
+  const content = (id, nombreProyecto) => {
+    return (
+      <>
+        <p>¿Desea eliminar el Proyecto {id} con nombre {nombreProyecto}? </p>
+        <p><center> <strong> Esta acción no será reversible </strong></center></p>
+      </>
+    )
   }
 
   const url = `https://modulo-proyectos-squad7.herokuapp.com/proyectos/${location.state.codigoProyecto}/tareas`
@@ -143,34 +175,23 @@ const VerProyecto = (props) => {
     <div style={{ paddingBottom: 10}}>
     <div style={{ backgroundColor: '#9fd9f8', paddingLeft: 10, borderRadius: '6px'}}>
       <Grid container spacing={2} paddingBottom={3}>
-        {/* <Grid item xs={4}>
-            <Typography variant="h5">
-                [{location.state.codigoProyecto}] - {location.state.nombreProyecto}
-            </Typography>
-        </Grid> */}
-        <Box sx={{
-                                  mx: 'auto',
-                                  width: 200,
-                                  paddingLeft: 0,
-                                  paddingTop:4.5,
-                                  borderRadius: 1,
-                                  fontSize: 30,
-                                  fontFamily: 'Sans-Serif'
-                                }}>
+        <Box sx={{ mx: 'auto', width:'auto', paddingLeft: 0, paddingTop:4.5, 
+        borderRadius: 1, fontSize: 30, fontFamily: 'Sans-Serif'
+        }}>
                     [{location.state.codigoProyecto}] - {location.state.nombreProyecto}</Box>
         <Grid item xs={8} >
           <Box component="div" sx={{ p: 2, float:'right' }}>
               <Stack direction="row" spacing={1}>
                 <Stack direction="row" spacing={2} paddingRight={1} paddingTop={0.5}>
-                  <Box sx={{mx: 'auto', bgcolor: 'primary.main',color: '#fff',width: 120,
+                  <Box sx={{mx: 'auto', bgcolor: 'primary.main',color: '#fff',width: 150,
                             p: 1,borderRadius: 1,display: 'grid',
                             gridAutoColumns: '1fr',
-                            gap: 5,}}>
+                            gap: 3,}}>
                     <Box sx={{ gridRow: '1'}}>
                       <PersonIcon />
                     </Box>
                     <Box sx={{ gridRow: '1',paddingTop:0.5}}>
-                      {location.state.liderProyecto}
+                      {lider.Nombre} {lider.Apellido}
                     </Box>
                   </Box>
                   <Box sx={{mx: 'auto', bgcolor: 'primary.main',color: '#fff',width: 'auto',
@@ -197,6 +218,7 @@ const VerProyecto = (props) => {
                   </Box>
                   
                 </Stack>
+                <div>
                   <IconButton color="primary" aria-label="edit">
                     <EditIcon 
                       onClick={() => history.push({
@@ -211,35 +233,12 @@ const VerProyecto = (props) => {
                       }
                       })}/>
                   </IconButton>
-                  
-                  <div>
+                  </div>
+                  <div >
                     <IconButton color="primary" aria-label="delete">
                       <DeleteIcon               
-                      // onClick={() => onEliminarProyectoHandler(location.state.codigoProyecto)}/>
-                      onClick={handleClickOpen}/>
-
+                      onClick={() => onEliminarProyectoHandler(location.state.codigoProyecto)}/>
                       </IconButton>
-                    <Dialog
-                      open={open}
-                      //onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                    <DialogTitle id="alert-dialog-title">
-                      {"Seguro que desea eliminar el proyecto?"}
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Al eliminar el proyecto no podrá recuperarlo y se borraran todas las tareas dentro de él.
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleCloseEliminar}>Si</Button>
-                      <Button onClick={handleCloseNoEliminar} autoFocus>
-                        No
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
                   </div>
 
 
@@ -282,6 +281,14 @@ const VerProyecto = (props) => {
           </Typography>
         </div>
       </div>
+      <ConfirmModal
+        content={content(location.state.codigoProyecto, location.state.nombreProyecto)}
+        open={showModal}
+        textoConfirmar="Eliminar"
+        textoCancelar="Cancelar"
+        setOpen={setShowModal}
+        onConfirm={onEliminarProyectoModalHandler}
+      />
       <QuickFilteringGrid data={tareas} columns={columns} />
       <Button variant="contained"
         color="primary"

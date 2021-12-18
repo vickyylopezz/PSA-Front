@@ -4,13 +4,16 @@ import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import IconButton from '@mui/material/IconButton';
-
+import { Typography } from '@mui/material';
+import { TextField } from '@mui/material';
 const ConsultarProyectos = () => {
 
   const [proyectos, setProyectos] = useState([]);
   const [proyectoElegido, setProyectoElegido] = useState();
+  const [lideres, setLideres] = useState([]);
   let history = useHistory();
-
+  let nombre;
+  let apellido;
   const onChangeSelectHandler = (version, codigoProducto, params) => {
     params.row.versionElegida = {
       codigoProducto: codigoProducto,
@@ -18,10 +21,38 @@ const ConsultarProyectos = () => {
     };
   }
 
+  useEffect(() => {
+    fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados`) 
+      .then(res => res.json())
+      .then(
+        (data) => {
+          setLideres(data);
+        }
+      )
+  },[])
+
   const columns = [
     { field: 'id', headerName: 'Codigo', width: 110 },
     { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
-    { field: 'liderDeProyecto', headerName: 'Lider', sortable: false, width: 150 },
+    { field: 'liderDeProyecto', headerName: 'Lider', sortable: false, width: 150, 
+    renderCell: (params) => {
+      return (       
+          lideres.map((s) => {
+            if(s.legajo == params.row.liderDeProyecto){
+              nombre= s.Nombre;
+              apellido = s.Apellido;
+              return (
+                <Typography fontSize={'0.875rem'}>{s.Nombre} {s.Apellido} </Typography>
+              )
+            }
+            
+          })
+        
+        
+        
+      )
+    }
+    },
     { field: 'descripcion', headerName: 'Descripción', sortable: false, width: 200 },
     { field: 'estado', headerName: 'Estado', sortable: false, width: 150 },
     { field: 'fechaCreacion', headerName: 'Fecha de Creación', sortable: false, width: 170 },
@@ -33,17 +64,16 @@ const ConsultarProyectos = () => {
            setProyectoElegido(params.row.proyectoElegido)
            history.push({
              pathname: '/ver-proyecto',
-            //  state: {
-            //   //  codigoProyecto: params.row.proyectoElegido.Codigo,
-            //   //  version: params.row.proyectoElegido.codigo
-            //  }
             state: {
              codigoProyecto: params.row.id, 
              nombreProyecto: params.row.nombre,
              liderProyecto: params.row.liderDeProyecto,
              descripcion: params.row.descripcion,
              estado: params.row.estado,
-             fechaCreacion: params.row.fechaCreacion
+             fechaCreacion: params.row.fechaCreacion,
+             lideres: lideres,
+             nombrePersona: nombre,
+             apellidoPersona: apellido
             }
            });
          };

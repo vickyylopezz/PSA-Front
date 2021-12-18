@@ -27,10 +27,10 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const validate = values => {
   const errors = {};
-  if (!values.firstName) {
+  if (!values.nombre) {
     errors.firstName = 'Required';
   }
-  if (!values.lastName) {
+  if (!values.descripcion) {
     errors.lastName = 'Required';
   }
   if (!values.email) {
@@ -45,33 +45,18 @@ const onSubmit = async values => {
   window.alert(JSON.stringify(values, 0, 2));
 };
 
-const diaHoy = () => {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    today = mm + '/' + dd + '/' + yyyy;
-    return today;
-}
-
 const EditarTareaForm = (props) => {
   const location = useLocation();
-  const [personaAsignada, setPersonaAsignada] = useState([]);
+  const [legajoPersona, setLegajoPersona] = useState(location.state.legajoPersona);
   const [personasAsignadas, setPersonasAsignadas] = useState([]);
   const [descripcion, setDescripcion] = useState(location.state.descripcionTarea);
   const [estado, setEstado] = useState(location.state.estadoTarea);
   const [nombre, setNombre] = useState(location.state.nombreTarea);
 
-  const [value, setValue] = React.useState(diaHoy);
   let history = useHistory();
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
-
   useEffect(() => {
-    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados") //Cambiar por empleados
+    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados")
       .then(res => res.json())
       .then(
         (data) => {
@@ -90,7 +75,7 @@ const EditarTareaForm = (props) => {
         descripcion: descripcion,
         estado: estado,
         id: location.state.codigoTarea,
-        legajoPersonaAsignada: personaAsignada,
+        legajoPersonaAsignada: legajoPersona,
         nombre: nombre,
       })
     };
@@ -103,7 +88,7 @@ const EditarTareaForm = (props) => {
             nombreTarea: nombre,
             descripcionTarea: descripcion,
             estadoTarea: estado,
-            legajoPersona: personaAsignada,
+            legajoPersona: legajoPersona,
             codigoProyecto: location.state.codigoProyecto,
             nombreProyecto: location.state.nombreProyecto,
             liderProyecto: location.state.liderProyecto,
@@ -184,7 +169,7 @@ const EditarTareaForm = (props) => {
                     label="Persona Asignada"
                     formControlProps={{ fullWidth: true }}
                     defaultValue={location.state.legajoPersona}
-                    onChange={(event, value) => setPersonaAsignada(value.props.value)}
+                    onChange={(event, value) => setLegajoPersona(value.props.value)}
                   >
                     {
                       personasAsignadas.map((s) => {
@@ -195,19 +180,6 @@ const EditarTareaForm = (props) => {
                     }
                   </Select>
                 </Grid>
-                {/* <LocalizationProvider item dateAdapter={AdapterDateFns}>
-                    <Grid item style={{ marginTop: 32 }} xs={6}>
-                      <MobileDatePicker
-                        readOnly="true"
-                        label="Fecha creación"
-                        inputFormat="MM/dd/yyyy"
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </Grid>
-                    <Grid item xs={6} />
-                </LocalizationProvider> */}
                 <Grid container xs={12} spacing={2} justifyContent="flex-end" style={{ padding:10 }} style={{ marginTop: 32}}>
                   <Box paddingBottom={2}>
                     <Button
@@ -221,8 +193,7 @@ const EditarTareaForm = (props) => {
                     </Button>
                   </Box>
                 </Grid>
-                {/* <Grid container xs={12} justifyContent="flex-end" style={{ padding:10 }} style={{ marginTop: 32}}>
-                </Grid> */}
+                
               </Grid>
             </Paper>
           </form>
