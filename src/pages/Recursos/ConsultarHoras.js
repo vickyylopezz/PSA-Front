@@ -22,189 +22,127 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
+import QuickFilteringGrid from '../../components/common/DataGrid';
+import { set } from 'date-fns';
 
-const ConsultarHoras = (props) => {
+const ConsultarHoras = () => {
+  const [horas, setHoras] = useState([]);
+  const [proyecto, setProyecto]= useState([]);
+  
+  /*const [productoElegido, setProductoElegido] = useState();*/
+  let history = useHistory();
+  useEffect(() => {
+    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/legajo") 
+     .then(res => res.json())
+      .then(
+        (data) => {  setHoras(groupHoras(data));
+        }
+      )
+  }, [])
+  const groupHoras = (data) => {
+    let tempHoras = [];
+    data.map((d) => {
+          (() => {
+            fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
+            .then(res => res.json())
+              .then(
+                (data) => {  setProyecto(data.nombre);
+                }
+              )
+          }, [])
+          const prod = {
+          id: d.carga_id,
+          proyecto: proyecto, /// aca es el error
+          tarea: d.tarea_id,
+          horas: d.horas,
+          fecha: d.fecha,
+        }
+        tempHoras.push(prod);
+      }
+    )
 
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
+    return tempHoras;
   };
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
+    { field: 'proyecto', headerName: 'Proyecto', sortable: false, flex:1 },
+    {  field: 'tarea', headerName: 'Tarea', sortable: false, flex: 1},
+    { field: 'horas', headerName: 'Horas', sortable: false, flex: 1},
+      {field: 'fecha', headerName: 'Fecha', sortable: false, flex: 1},
+      {field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1},
+    {  
+      renderCell: (params) => {
+        const onVerTicketsHandler = (event) => {
+          event.preventDefault();
+          //setProductoElegido(params.row.versionElegida)
+          history.push({
+            pathname: '/ver-tickets',
+            state: {
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
+        };
 
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
+        const onCrearTicketHandler = (event) => {
+          event.preventDefault();
+          //setProductoElegido(params.row.versionElegida)
+          history.push({
+            pathname: '/crear-ticket',
+            state: {
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
+        }
 
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
+      return (
+          <>  
+            <Button
+              variant="contained"
+              color="primary"
+              size="auto"
+              onClick={onVerTicketsHandler}
+              disabled = {params.row.versionElegida == null}
+            >
+              Ver tickets
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="auto"
+              style={{ marginLeft: 16 }}
+              onClick={onCrearTicketHandler}
+              disabled = {params.row.versionElegida == null}  
+            >
+              Crear un nuevo ticket
+            </Button>
+          </>
+        )
+      }
+    }
+  ]
 
   return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </Box>
-  );
-}
-
-ConsultarHoras.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-function createData(name, tarea, horas, fecha) {
-  return { name, tarea, horas, fecha };
-}
-/* 
-Tenmos id de usuario -> pedir las horas-> id de proyectos y Tareay tenemos la fecha de carga
-Pedir cuales nos solos proyectos y las tareas con los ids (pedir nombre)
-*/
-const rows = [
-  createData('PSA', 'Resolver tickest', 4, '15-12-21'),
-  createData('PSA', 'Tarea 1', 3, 1),
-  createData('Samkert', 'Tarea 2', 16, 1),
-  createData('PSAA', 'Tarea 3', 6,1),
-  createData('Proyecto 1', 'Tarea 4', 2, 1),
-  createData('Proyecto 2', 'Tarea 6', 3, 4),
-  createData('Proyecto 4', 'Tarea 7', 9, 1),
-  createData('Proyecto 5', 'Tarea 8', 1, 1),
-  createData('Proyecto 6', 'Tarea 9', 14, 6),
-  createData('Proyecto 7', 'Tarea 10', 2, 8),
-  createData('Proyecto 8', 'Tarea 11', 5, 4),
-  createData('Proyecto 9', 'Tarea 12', 12, 1),
-  createData('Proyecto 10', 'Tarea 13', 7, 1),
-].sort((a, b) => (a.horas < b.horas ? -1 : 1));
-
-export default function CustomPaginationActionsTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  let history = useHistory();
-  return (   
-    <React.Fragment>
-      <CssBaseline />
-      <Container maxWidth="xl">
-      <div style={{ textAlign: 'center' }}><h1>Horas Cargadas </h1></div>
+    <>
+    <div style={{ textAlign: 'center' }}><h2>Carga Horas</h2></div>
       <div style={{ padding: 16, margin: 'auto' }}>
           <div style={{ float: 'right' }}>
             <Button variant="contained"
+              
               style={{right: 0}}
               color="primary"
               size="small"
               style={{ marginLeft: 16 }}
-              onClick={() => history.push('/carga-horas')}>Cargar Horas
+              onClick={() => history.push('/carga-horas')}>Crear Proyecto
             </Button>
           </div>
-        </div> 
-    <div style={{ marginTop: 35 }}>     
-      <TableContainer component={Paper}>
-      <Table aria-label="custom pagination table">
-        <TableHead>
-        <TableRow>
-            <TableCell>Proyecto</TableCell>
-            <TableCell align="right">Tarea</TableCell>
-            <TableCell align="right">Horas </TableCell>
-            <TableCell align="right">Fecha </TableCell>
-            <TableCell align="center">Operaciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row.name}>
-              <TableCell style={{ width: 130 }} component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell style={{ width: 180 }} align="right">
-                {row.tarea}
-              </TableCell>
-              <TableCell style={{ width: 100 }} align="right">
-                {row.horas}
-              </TableCell>
-              <TableCell style={{ width: 180 }} align="right">
-                {row.fecha}
-              </TableCell>
-            </TableRow>
-          ))}
-
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  'aria-label': 'rows per page',
-                },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={ConsultarHoras}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
-    </div> 
-      </Container>
-    </React.Fragment>
-  
-     );
-};
+        <div style={{ marginTop: 50 }}>  
+          <QuickFilteringGrid data={horas} columns={columns} />
+        </div>
+      </div>
+      
+    </>
+  )
+}
+export default ConsultarHoras;
