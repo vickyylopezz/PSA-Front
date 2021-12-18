@@ -10,6 +10,11 @@ import VerTicket from './pages/Soporte/VerTickets';
 import Layout from './components/layout/Layout';
 import ConsultarProyectos from './pages/Proyectos/ConsultarProyectos';
 import CrearProyecto from './pages/Proyectos/CrearProyecto';
+import VerProyecto from './pages/Proyectos/VerProyecto';
+import VerTarea from './pages/Proyectos/VerTarea';
+import CrearTarea from './pages/Proyectos/CrearTarea';
+import EditarProyecto from './pages/Proyectos/EditarProyecto';
+import EditarTarea from './pages/Proyectos/EditarTarea';
 
 function App() {
   return (
@@ -41,6 +46,21 @@ function App() {
         </Route>
         <Route path='/crear-proyecto'>
           <CrearProyecto />
+        </Route>
+        <Route path='/ver-proyecto'>
+          <VerProyecto />
+        </Route>
+        <Route path='/ver-tarea'>
+          <VerTarea />
+        </Route>
+        <Route path='/crear-tarea'>
+          <CrearTarea />
+        </Route>
+        <Route path='/editar-proyecto'>
+          <EditarProyecto />
+        </Route>
+        <Route path='/editar-tarea'>
+          <EditarTarea />
         </Route>
         <Route path='*'>
           <NotFound />
