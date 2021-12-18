@@ -21,7 +21,7 @@ import { Form, Field } from 'react-final-form';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
-import { useHistory,useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const validate = values => {
   const errors = {};
@@ -52,11 +52,11 @@ const CrearIncidenciaForm = (props) => {
   const [severidades, setSeveridades] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [personaAsignada, setPersonaAsignada] = useState('');
-  // const [fechaFinalizacion, setFechaFinalizacion] = useState(new Date('2014-08-18T21:11:54'));
   const [fechaFinalizacion, setFechaFinalizacion] = useState('2014-08-18');
   const [estado, setEstado] = useState('');
   const [severidad, setSeveridad] = useState(0);
   const [tareas, setTareas] = useState([]);
+  const [tareasAsignadas, setTareasAsignadas] = useState([]);
   const [proyectos, setProyectos] = useState([]);
   const [esError, setEsError] = useState(false);
   const [cliente, setCliente] = useState('');
@@ -131,7 +131,27 @@ const CrearIncidenciaForm = (props) => {
     obtenerEmpleados();
   }, [])
 
+  const asociarTareas = (ticketId) => {
+    tareasAsignadas.map((tarea) => {
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          proyectoId: tarea.codigoProyecto,
+          tareaId: tarea.id,
+        })
+      };
+      fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}/tarea/asociar`, requestOptions)
+        .then(response => response.json())
+    })
+  }
+
+  const asociarTareaHandler = (value) => {
+    setTareasAsignadas(value);
+  }
+
   const crearTicket = () => {
+    let ticketId = 0;
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -149,7 +169,13 @@ const CrearIncidenciaForm = (props) => {
     };
     fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket`, requestOptions)
       .then(response => response.json())
-      .then(history.push('/consultar-productos'))
+      .then(data => ticketId = data.id)
+      .then(() => {
+        if (esError) {
+          asociarTareas(ticketId);
+        }
+        history.push('/consultar-productos');
+      })
   }
 
   return (
@@ -335,6 +361,7 @@ const CrearIncidenciaForm = (props) => {
                     <Grid item xs={2} />
                     <Grid item xs={5} item style={{ marginTop: 16 }}>
                       <Autocomplete
+                        onChange={(event, value) => asociarTareaHandler(value)}
                         multiple
                         id="tags-standard"
                         options={tareas}
