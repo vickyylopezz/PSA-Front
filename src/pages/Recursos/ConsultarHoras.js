@@ -28,55 +28,53 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const ConsultarHoras = () => {
   const [horas, setHoras] = useState([]);
-  const [proyecto, setProyecto]= useState([]);
-  
-  const [horaElegida, setHoraElegida] = useState();
-  
+  const [proyecto, setProyecto] = useState([]);
+
+  /*const [productoElegido, setProductoElegido] = useState();*/
+
   useEffect(() => {
-    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2") 
-     .then(res => res.json())
+    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
+      .then(res => res.json())
       .then(
-        (data) => {  setHoras(groupHoras(data));
+        (data) => {
+          setHoras(groupHoras(data));
         }
       )
   }, [])
   const groupHoras = (data) => {
     let tempHoras = [];
-    data.map((d) => {   
-      
-          // (() => {
-          //   fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
-          //   .then(res => res.json())
-          //     .then(
-          //       (res) => {  setProyecto(res.nombre);
-          //       }
-          //     )
-          // }, [])
-          const prod = {
-          id: d.carga_id,
-          proyecto: d.proyecto_id,
-          tarea: d.tarea_id,
-          horas: d.horas,
-          fecha: d.fecha,
-        }
-        tempHoras.push(prod);
-      }
-    )
-
+    data.map((d) => {
+      tempHoras.push({
+        id: d.carga_id,
+        proyecto: proyecto,
+        tarea: d.tarea_id,
+        horas: d.horas,
+        fecha: d.fecha,
+      });
+    })
+    data.map((d) => {
+    
+      fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
+        .then(res => res.json())
+        .then((res) => {
+          setProyecto(res.nombre);
+        })
+    })
+    
     return tempHoras;
   };
   const columns = [
     { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
-    { field: 'proyecto', headerName: 'Proyecto', sortable: false, flex:1 },
-    {  field: 'tarea', headerName: 'Tarea', sortable: false, flex: 1},
-    { field: 'horas', headerName: 'Horas', sortable: false, flex: 1},
-      {field: 'fecha', headerName: 'Fecha', sortable: false, flex: 1},
-      {field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1},
-    {  
+    { field: 'proyecto', headerName: 'Proyecto', sortable: false, flex: 1 },
+    { field: 'tarea', headerName: 'Tarea', sortable: false, flex: 1 },
+    { field: 'horas', headerName: 'Horas', sortable: false, flex: 1 },
+    { field: 'fecha', headerName: 'Fecha', sortable: false, flex: 1 },
+    { field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1 },
+    {
       renderCell: (params) => {
         const onEditarHoraHandler= (event) => {
           event.preventDefault();
-          setHoraElegida(params.row.versionElegida)
+          //setHoraElegida(params.row.versionElegida)
           history.push({
             pathname: '/ver-tickets',
             state: {
@@ -120,7 +118,7 @@ const ConsultarHoras = () => {
               size="auto"
               style={{ marginLeft: 16 }}
               onClick={onCrearTicketHandler}
-              disabled = {params.row.versionElegida == null}  
+              disabled={params.row.versionElegida == null}
             >
               Crear un nuevo ticket
             </Button>
@@ -132,23 +130,23 @@ const ConsultarHoras = () => {
   let history = useHistory();
   return (
     <>
-    <div style={{ textAlign: 'center' }}><h2>Carga Horas</h2></div>
+      <div style={{ textAlign: 'center' }}><h2>Carga Horas</h2></div>
       <div style={{ padding: 16, margin: 'auto' }}>
-          <div style={{ float: 'right' }}>
-            <Button variant="contained"
-              
-              style={{right: 0}}
-              color="primary"
-              size="small"
-              style={{ marginLeft: 16 }}
-              onClick={() => history.push('/carga-horas')}>Cargar Horas
-            </Button>
-          </div>
-        <div style={{ marginTop: 50 }}>  
+        <div style={{ float: 'right' }}>
+          <Button variant="contained"
+
+            style={{ right: 0 }}
+            color="primary"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={() => history.push('/carga-horas')}>Cargar Horas
+          </Button>
+        </div>
+        <div style={{ marginTop: 50 }}>
           <QuickFilteringGrid data={horas} columns={columns} />
         </div>
       </div>
-      
+
     </>
   )
 }
