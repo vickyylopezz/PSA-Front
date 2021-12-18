@@ -25,12 +25,15 @@ import { useHistory } from "react-router-dom";
 import QuickFilteringGrid from '../../components/common/DataGrid';
 import { set } from 'date-fns';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const ConsultarHoras = () => {
   const [horas, setHoras] = useState([]);
-  const [proyecto, setProyecto] = useState([]);
+  const [proyectos, setProyectos] = useState([]);
 
-  /*const [productoElegido, setProductoElegido] = useState();*/
+  const [horaElegida, setHoraElegida] = useState();
 
   useEffect(() => {
     fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
@@ -46,7 +49,7 @@ const ConsultarHoras = () => {
     data.map((d) => {
       tempHoras.push({
         id: d.carga_id,
-        proyecto: proyecto,
+        proyecto: proyectos,
         tarea: d.tarea_id,
         horas: d.horas,
         fecha: d.fecha,
@@ -57,7 +60,7 @@ const ConsultarHoras = () => {
       fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
         .then(res => res.json())
         .then((res) => {
-          setProyecto(res.nombre);
+          setProyectos(res.nombre);
         })
     })
     
@@ -65,65 +68,35 @@ const ConsultarHoras = () => {
   };
   const columns = [
     { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
-    { field: 'proyecto', headerName: 'Proyecto', sortable: false, flex: 1 },
-    { field: 'tarea', headerName: 'Tarea', sortable: false, flex: 1 },
-    { field: 'horas', headerName: 'Horas', sortable: false, flex: 1 },
-    { field: 'fecha', headerName: 'Fecha', sortable: false, flex: 1 },
-    { field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1 },
+    { field: 'proyecto', headerName: 'Proyecto', sortable: false, width: 150 },
+    { field: 'tarea', headerName: 'Tarea', sortable: false, width: 150},
+    { field: 'horas', headerName: 'Horas', sortable: false, width: 120 },
+    { field: 'fecha', headerName: 'Fecha', sortable: false, width: 150},
     {
+      field: 'acciones', headerName: 'operaciones', sortable: false, width: 180,
       renderCell: (params) => {
-        const onEditarHoraHandler= (event) => {
-          event.preventDefault();
-          //setHoraElegida(params.row.versionElegida)
-          history.push({
-            pathname: '/ver-tickets',
-            state: {
-              codigoProducto: params.row.versionElegida.codigoProducto,
-              version: params.row.versionElegida.version
-            }
-          });
-        };
+          const onVerProyectoHandler = (event) => {
+           event.preventDefault();
+           setHoraElegida(params.row.horaElegida)
+           history.push({
+             pathname: '/ver-proyecto',
+             state: {
+               horaCodigo: params.row.horaElegida.Hora_id,
+              //  version: params.row.proyectoElegido.codigo
+             }
+           });
+         };
 
-        const onCrearTicketHandler = (event) => {
-          event.preventDefault();
-          //setProductoElegido(params.row.versionElegida)
-          history.push({
-            pathname: '/crear-ticket',
-            state: {
-              codigoProducto: params.row.versionElegida.codigoProducto,
-              version: params.row.versionElegida.version
-            }
-          });
-        }
-      return (
-          <> 
-            <>
-             <IconButton color="primary" onClick={onEditarHoraHandler} aria-label="delete">
+         return (
+           <>
+             <IconButton color="primary" onClick={onVerProyectoHandler} aria-label="delete">
                <DeleteIcon />
              </IconButton>
-
-           </> 
-            <Button
-              variant="contained"
-              color="primary"
-              size="auto"
-              onClick={onEditarHoraHandler}
-              disabled = {params.row.versionElegida == null}
-            >
-              Ver tickets
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="auto"
-              style={{ marginLeft: 16 }}
-              onClick={onCrearTicketHandler}
-              disabled={params.row.versionElegida == null}
-            >
-              Crear un nuevo ticket
-            </Button>
-          </>
-        )
+             <IconButton color="primary" onClick={onVerProyectoHandler} aria-label="delete">
+               <EditIcon />
+             </IconButton>
+           </>
+         )
       }
     }
   ]
