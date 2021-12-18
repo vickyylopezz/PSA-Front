@@ -43,17 +43,17 @@ const ConsultarHoras = () => {
     let tempHoras = [];
     data.map((d) => {   
       
-          (() => {
-            fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
-            .then(res => res.json())
-              .then(
-                (res) => {  setProyecto(res.nombre);
-                }
-              )
-          }, [])
+          // (() => {
+          //   fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
+          //   .then(res => res.json())
+          //     .then(
+          //       (res) => {  setProyecto(res.nombre);
+          //       }
+          //     )
+          // }, [])
           const prod = {
           id: d.carga_id,
-          proyecto: proyecto,
+          proyecto: d.proyecto_id,
           tarea: d.tarea_id,
           horas: d.horas,
           fecha: d.fecha,
