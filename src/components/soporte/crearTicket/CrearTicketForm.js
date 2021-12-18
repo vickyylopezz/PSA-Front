@@ -142,12 +142,12 @@ const CrearIncidenciaForm = (props) => {
         })
       };
       fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}/tarea/asociar`, requestOptions)
-      .then(response => response.json())
+        .then(response => response.json())
     })
   }
 
   const asociarTareaHandler = (value) => {
-      setTareasAsignadas(value);
+    setTareasAsignadas(value);
   }
 
   const crearTicket = () => {
