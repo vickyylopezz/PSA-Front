@@ -41,12 +41,19 @@ const ConsultarHoras = () => {
   }, [])
   const groupHoras = (data) => {
     let tempHoras = [];
-    data.map((d) => {
-          
-            
+    data.map((d) => {   
+      
+          (() => {
+            fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
+            .then(res => res.json())
+              .then(
+                (res) => {  setProyecto(res.nombre);
+                }
+              )
+          }, [])
           const prod = {
           id: d.carga_id,
-          proyecto: d.proyecto_id, /// aca es el error
+          proyecto: proyecto,
           tarea: d.tarea_id,
           horas: d.horas,
           fecha: d.fecha,
