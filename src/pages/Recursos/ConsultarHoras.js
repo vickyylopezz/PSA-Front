@@ -30,9 +30,9 @@ const ConsultarHoras = () => {
   const [proyecto, setProyecto]= useState([]);
   
   /*const [productoElegido, setProductoElegido] = useState();*/
-  let history = useHistory();
+  
   useEffect(() => {
-    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/legajo") 
+    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2") 
      .then(res => res.json())
       .then(
         (data) => {  setHoras(groupHoras(data));
@@ -42,17 +42,11 @@ const ConsultarHoras = () => {
   const groupHoras = (data) => {
     let tempHoras = [];
     data.map((d) => {
-          (() => {
-            fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`) 
-            .then(res => res.json())
-              .then(
-                (data) => {  setProyecto(data.nombre);
-                }
-              )
-          }, [])
+          
+            
           const prod = {
           id: d.carga_id,
-          proyecto: proyecto, /// aca es el error
+          proyecto: d.proyecto_id, /// aca es el error
           tarea: d.tarea_id,
           horas: d.horas,
           fecha: d.fecha,
@@ -95,7 +89,6 @@ const ConsultarHoras = () => {
             }
           });
         }
-
       return (
           <>  
             <Button
@@ -122,7 +115,7 @@ const ConsultarHoras = () => {
       }
     }
   ]
-
+  let history = useHistory();
   return (
     <>
     <div style={{ textAlign: 'center' }}><h2>Carga Horas</h2></div>
@@ -134,7 +127,7 @@ const ConsultarHoras = () => {
               color="primary"
               size="small"
               style={{ marginLeft: 16 }}
-              onClick={() => history.push('/carga-horas')}>Crear Proyecto
+              onClick={() => history.push('/carga-horas')}>Cargar Horas
             </Button>
           </div>
         <div style={{ marginTop: 50 }}>  
