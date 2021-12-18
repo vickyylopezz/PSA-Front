@@ -6,7 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
 const ConfirmModal = (props) => {
-  const { content, open, setOpen, onConfirm } = props;
+  const { content, open, setOpen, onConfirm, textoCancelar, textoConfirmar } = props;
 
   return (
     <Dialog
@@ -19,7 +19,7 @@ const ConfirmModal = (props) => {
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={() => setOpen(false)} color="primary">
-          Cancelar
+          {props.textoCancelar}
         </Button>
         <Button
           onClick={() => {
@@ -28,7 +28,7 @@ const ConfirmModal = (props) => {
           }}
           color="error"
         >
-          Confirmar
+          {props.textoConfirmar}
         </Button>
       </DialogActions>
     </Dialog>
