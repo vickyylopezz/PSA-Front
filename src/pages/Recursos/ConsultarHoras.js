@@ -24,6 +24,7 @@ import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import QuickFilteringGrid from '../../components/common/DataGrid';
 import { set } from 'date-fns';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ConsultarHoras = () => {
   const [horas, setHoras] = useState([]);
@@ -45,20 +46,21 @@ const ConsultarHoras = () => {
     data.map((d) => {
       tempHoras.push({
         id: d.carga_id,
-        proyecto: d.proyecto_id,
+        proyecto: proyecto,
         tarea: d.tarea_id,
         horas: d.horas,
         fecha: d.fecha,
       });
     })
     data.map((d) => {
+    
       fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
         .then(res => res.json())
         .then((res) => {
           setProyecto(res.nombre);
         })
     })
-
+    
     return tempHoras;
   };
   const columns = [
@@ -70,9 +72,9 @@ const ConsultarHoras = () => {
     { field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1 },
     {
       renderCell: (params) => {
-        const onVerTicketsHandler = (event) => {
+        const onEditarHoraHandler= (event) => {
           event.preventDefault();
-          //setProductoElegido(params.row.versionElegida)
+          //setHoraElegida(params.row.versionElegida)
           history.push({
             pathname: '/ver-tickets',
             state: {
@@ -93,14 +95,20 @@ const ConsultarHoras = () => {
             }
           });
         }
-        return (
-          <>
+      return (
+          <> 
+            <>
+             <IconButton color="primary" onClick={onEditarHoraHandler} aria-label="delete">
+               <DeleteIcon />
+             </IconButton>
+
+           </> 
             <Button
               variant="contained"
               color="primary"
               size="auto"
-              onClick={onVerTicketsHandler}
-              disabled={params.row.versionElegida == null}
+              onClick={onEditarHoraHandler}
+              disabled = {params.row.versionElegida == null}
             >
               Ver tickets
             </Button>
