@@ -21,8 +21,7 @@ import { Form, Field } from 'react-final-form';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
-import { useLocation } from "react-router-dom";
-
+import { useHistory,useLocation } from "react-router-dom";
 
 const validate = values => {
   const errors = {};
@@ -46,55 +45,111 @@ const onSubmit = async values => {
 
 const CrearIncidenciaForm = (props) => {
   const location = useLocation();
+  let history = useHistory();
+  const [descripcion, setDescripcion] = useState('');
+  const [titulo, setTitulo] = useState('');
   const [clients, setClients] = useState([]);
-  const [personasAsignadas, setPersonasAsignadas] = useState([]);
-  const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
+  const [severidades, setSeveridades] = useState([]);
+  const [empleados, setEmpleados] = useState([]);
+  const [personaAsignada, setPersonaAsignada] = useState('');
+  // const [fechaFinalizacion, setFechaFinalizacion] = useState(new Date('2014-08-18T21:11:54'));
+  const [fechaFinalizacion, setFechaFinalizacion] = useState('2014-08-18');
+  const [estado, setEstado] = useState('');
+  const [severidad, setSeveridad] = useState(0);
   const [tareas, setTareas] = useState([]);
+  const [proyectos, setProyectos] = useState([]);
   const [esError, setEsError] = useState(false);
+  const [cliente, setCliente] = useState('');
+
   const codigoProducto = location.state.codigoProducto;
   const version = location.state.version;
-  const handleChange = (newValue) => {
-    setValue(newValue);
+
+
+  const formatDate = date => {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
+  const handleFechaFinalizacionChange = (newValue) => {
+    const date = formatDate(newValue);
+    setFechaFinalizacion(newValue);
   };
 
-  useEffect(() => {
+  const obtenerClientes = () => {
     fetch("https://aninfo-psa-soporte.herokuapp.com/cliente")
       .then(res => res.json())
-      .then(
-        (data) => {
-          setClients(data);
-        }
-      )
+      .then((data) => {
+        setClients(data);
+      })
+  }
 
-    // fetch("https://aninfo-psa-soporte.herokuapp.com/persona-asignada")
-    //   .then(res => res.json())
-    //   .then(
-    //     (data) => {
-    //       setPersonasAsignadas(data);
-    //     }
-    //   )
+  const obtenerEmpleados = () => {
+    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados")
+      .then(res => res.json())
+      .then((data) => {
+        setEmpleados(data);
+      })
+  }
 
+  const obtenerSeveridades = () => {
+    fetch("https://aninfo-psa-soporte.herokuapp.com/severidad")
+      .then(res => res.json())
+      .then((data) => {
+        setSeveridades(data);
+      })
+  }
+
+  const obtenerProyectos = () => {
+    fetch("https://modulo-proyectos-squad7.herokuapp.com/proyectos")
+      .then(res => res.json())
+      .then((data) => {
+        setProyectos(data);
+      })
+  }
+
+  const onChangeProyecto = value => {
+    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${value}/tareas`)
+      .then(res => res.json())
+      .then((data) => {
+        setTareas(data);
+      })
+  }
+
+  useEffect(() => {
+    obtenerClientes();
+    obtenerSeveridades();
+    obtenerProyectos();
+    obtenerEmpleados();
   }, [])
 
   const crearTicket = () => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        title: "un titulo",
-        clienteId: 1,
-        descripcion: "una descripcion",
-        estado: "Iniciado",
-        fechaCreacion: Date.now().toString(),
-        fechaFinalizacion: value.toString(),
-        personaAsignadaDni: "11231564",
-        severidadId: 1,
+      body: JSON.stringify({
+        clienteId: cliente,
+        descripcion: descripcion,
+        empleadoId: personaAsignada,
+        estado: estado,
+        fechaCreacion: new Date().toISOString().slice(0, 10).toString(),
+        fechaFinalizacion: fechaFinalizacion.toString(),
+        severidadId: severidad,
         tipo: esError ? "error" : "consulta",
+        title: titulo
       })
     };
     fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket`, requestOptions)
       .then(response => response.json())
-      .then(data => this.setState({ postId: data.id }));
+      .then(history.push('/consultar-productos'))
   }
 
   return (
@@ -130,6 +185,7 @@ const CrearIncidenciaForm = (props) => {
                     required
                     name="Titulo"
                     component={TextField}
+                    onChange={(event) => setTitulo(event.target.value)}
                     type="text"
                     label="Titulo del ticket"
                   />
@@ -140,6 +196,7 @@ const CrearIncidenciaForm = (props) => {
                     fullWidth
                     required
                     component={TextField}
+                    onChange={(event) => setDescripcion(event.target.value)}
                     multiline
                     type="text"
                     label="Descripción del ticket"
@@ -157,7 +214,7 @@ const CrearIncidenciaForm = (props) => {
                     id="estado"
                     label="Estado"
                     formControlProps={{ fullWidth: true }}
-                  // onChange={handleChange}
+                    onChange={(event, value) => setEstado(value.props.value)}
                   >
                     <MenuItem value="Abierto">Abierto</MenuItem>
                     <MenuItem value="EnProgreso">En Progreso</MenuItem>
@@ -179,60 +236,119 @@ const CrearIncidenciaForm = (props) => {
                     id="severidad"
                     label="Severidad"
                     formControlProps={{ fullWidth: true }}
-                  // onChange={handleChange}
+                    onChange={(event, value) => setSeveridad(value.props.value)}
                   >
-                    <MenuItem value="1">1</MenuItem>
-                    <MenuItem value="2">2</MenuItem>
-                    <MenuItem value="3">3</MenuItem>
-                    <MenuItem value="4">4</MenuItem>
+                    {
+                      severidades.map((s) => {
+                        return (
+                          <MenuItem value={s.id}>{s.nombre}</MenuItem>
+                        )
+                      })
+                    }
                   </Select>
                 </Grid>
                 <LocalizationProvider item dateAdapter={AdapterDateFns}>
                   <Grid item style={{ marginTop: 32 }} xs={6}>
                     <MobileDatePicker
-                      label="Fecha creación"
+                      label="Fecha finalización"
                       inputFormat="MM/dd/yyyy"
-                      value={value}
-                      onChange={handleChange}
+                      value={fechaFinalizacion}
+                      onChange={(value) => handleFechaFinalizacionChange(value)}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Grid>
                   <Grid item xs={6} />
                 </LocalizationProvider>
-                <Grid item xs={6} item style={{ marginTop: 16 }}>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={clients}
-                    getOptionLabel={(option) => option.razonSocial}
-                    renderInput={(params) => <TextField {...params} label="Cliente" />}
-                  />
+                <Grid item xs={5} item style={{ marginTop: 16 }}>
+                  <InputLabel required variant="standard" htmlFor="cliente">
+                    Cliente
+                  </InputLabel>
+                  <Select
+                    required
+                    fullWidth
+                    name="cliente"
+                    labelId="demo-simple-select-label"
+                    id="cliente"
+                    label="Cliente"
+                    formControlProps={{ fullWidth: true }}
+                    onChange={(event, value) => setCliente(value.props.value)}
+                  >
+                    {
+                      clients.map((s) => {
+                        return (
+                          <MenuItem value={s.id}>{s.razonSocial} </MenuItem>
+                        )
+                      })
+                    }
+                  </Select>
                 </Grid>
-                <Grid item xs={6} item style={{ marginTop: 16 }}>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={personasAsignadas}
-                    getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
-                    renderInput={(params) => <TextField {...params} label="Persona asignada" />}
-                  />
+
+                <Grid item xs={2} />
+                <Grid item xs={5} item style={{ marginTop: 16 }}>
+                  <InputLabel required variant="standard" htmlFor="personaAsignada">
+                    Persona asignada
+                  </InputLabel>
+                  <Select
+                    required
+                    fullWidth
+                    name="personaAsignada"
+                    labelId="demo-simple-select-label"
+                    id="personaAsignada"
+                    label="Persona asignada"
+                    formControlProps={{ fullWidth: true }}
+                    onChange={(event, value) => setPersonaAsignada(value.props.value)}
+                  >
+                    {
+                      empleados.map((s) => {
+                        return (
+                          <MenuItem value={s.legajo}>{s.Nombre} {s.Apellido} </MenuItem>
+                        )
+                      })
+                    }
+                  </Select>
                 </Grid>
                 {esError &&
-                  <Grid item xs={12} item style={{ marginTop: 16 }}>
-                    <Autocomplete
-                      multiple
-                      id="tags-standard"
-                      options={clients}
-                      getOptionLabel={(option) => option.razonSocial}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Asociar tareas"
-                        />
-                      )}
-                    />
-                  </Grid>
+                  <>
+                    <Grid item xs={5} item style={{ marginTop: 32 }}>
+                      <InputLabel required variant="standard" htmlFor="proyecto">
+                        Proyecto
+                      </InputLabel>
+                      <Select
+                        required
+                        fullWidth
+                        name="proyecto"
+                        labelId="demo-simple-select-label"
+                        id="proyecto"
+                        label="Proyecto"
+                        formControlProps={{ fullWidth: true }}
+                        onChange={(event, value) => onChangeProyecto(value.props.value)}
+                      >
+                        {
+                          proyectos.map((s) => {
+                            return (
+                              <MenuItem value={s.id}>{s.nombre}</MenuItem>
+                            )
+                          })
+                        }
+                      </Select>
+                    </Grid>
+                    <Grid item xs={2} />
+                    <Grid item xs={5} item style={{ marginTop: 16 }}>
+                      <Autocomplete
+                        multiple
+                        id="tags-standard"
+                        options={tareas}
+                        getOptionLabel={(option) => option.nombre}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            label="Asociar tareas"
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </>
                 }
 
                 <Grid item style={{ marginTop: 32 }}>
@@ -249,9 +365,8 @@ const CrearIncidenciaForm = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    type="submit"
-                    disabled={submitting}
-                    onClick={() => crearTicket}
+                    type="button"
+                    onClick={() => crearTicket()}
                   >
                     Crear ticket
                   </Button>
