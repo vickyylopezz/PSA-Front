@@ -6,7 +6,8 @@ import ConsultarHoras from './pages/Recursos/ConsultarHoras';
 import CargarHoras from './pages/Recursos/CargarHoras';
 import ConsultarProductos from './pages/Soporte/ConsultarProductos';
 import ConsultarTickets from './pages/Soporte/ConsultarTickets';
-import VerTicket from './pages/Soporte/VerTickets';
+import VerTickets from './pages/Soporte/VerTickets';
+import VerTicket from './pages/Soporte/VerTicket';
 import Layout from './components/layout/Layout';
 import ConsultarProyectos from './pages/Proyectos/ConsultarProyectos';
 import CrearProyecto from './pages/Proyectos/CrearProyecto';
@@ -24,6 +25,9 @@ function App() {
           <Home/>
         </Route>
         <Route path='/ver-tickets'>
+          <VerTickets />
+        </Route>
+        <Route path='/ver-ticket'>
           <VerTicket />
         </Route>
         <Route path='/crear-ticket'>
