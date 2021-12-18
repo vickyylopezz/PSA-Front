@@ -56,7 +56,7 @@ const ConsultarProductos = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 110, hide: 'true' },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
-    { field: 'nombre', headerName: 'Nombre', sortable: false, flex:1 },
+    { field: 'nombre', headerName: 'Nombre', sortable: false, flex: 1 },
     {
       field: 'version', headerName: 'Version', sortable: false, flex: 1,
       renderCell: (params) => {
@@ -110,7 +110,7 @@ const ConsultarProductos = () => {
               color="primary"
               size="auto"
               onClick={onVerTicketsHandler}
-              disabled = {params.row.versionElegida == null}
+              disabled={params.row.versionElegida == null}
             >
               Ver tickets
             </Button>
@@ -120,7 +120,7 @@ const ConsultarProductos = () => {
               size="auto"
               style={{ marginLeft: 16 }}
               onClick={onCrearTicketHandler}
-              disabled = {params.row.versionElegida == null}  
+              disabled={params.row.versionElegida == null}
             >
               Crear un nuevo ticket
             </Button>
@@ -135,19 +135,13 @@ const ConsultarProductos = () => {
       .then(res => res.json())
       .then(
         (data) => {
-          // setIsLoaded(true);
           setProductos(groupProducts(data));
-          // },
-          // (error) => {
-          //   setIsLoaded(true);
-          //   setError(error);
         }
       )
   }, [])
 
   return (
     <>
-      {/* {verTicket && <VerTicket codigoProducto={productoElegido.codigoProducto} version={productoElegido?.version} />} */}
       <QuickFilteringGrid data={productos} columns={columns} />
     </>
   )

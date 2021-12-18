@@ -1,5 +1,5 @@
 import React from 'react';
-import CrearProyectoForm from '../../components/proyectos/crearProyecto/CrearProyectoForm';
+import CrearProyectoForm from '../../components/proyectos/crear/CrearProyectoForm';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 

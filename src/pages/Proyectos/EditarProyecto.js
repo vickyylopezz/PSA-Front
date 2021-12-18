@@ -1,16 +1,16 @@
 import React from 'react';
-import CrearTareaForm from '../../components/proyectos/crear/CrearTareaForm';
+import EditarProyectoForm from '../../components/proyectos/editar/EditarProyectoForm';
 import Button from '@mui/material/Button';
 import { useHistory,useLocation } from "react-router-dom";
 
-const CrearTarea = () => {
+const EditarProyecto = () => {
   let history = useHistory();
   const location = useLocation();
 
   return (
     <>
       <div style={{ padding: 16, margin: 'auto' }}>
-        <CrearTareaForm />
+        <EditarProyectoForm />
         <div style={{ marginTop: 16 }}>
           <Button variant="contained"
             color="primary"
@@ -32,4 +32,4 @@ const CrearTarea = () => {
   )
 };
 
-export default CrearTarea;
+export default EditarProyecto;

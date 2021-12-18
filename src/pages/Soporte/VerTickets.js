@@ -19,7 +19,7 @@ const VerTickets = (props) => {
       field: 'acciones', headerName: 'Acciones', sortable: false, width: 300, flex: 1,
       renderCell: (params) => {
         const onVerTicketsHandler = () => {
-
+          history.push('/ver-ticket')
         };
 
         const onEliminarTicketHandler = (id, codigoProducto, version) => {
@@ -40,6 +40,15 @@ const VerTickets = (props) => {
               onClick={() => onEliminarTicketHandler(params.row.id, location.state.codigoProducto, location.state.version)}
             >
               Eliminar
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              size="small"
+              style={{ marginLeft: 16 }}
+              onClick={onVerTicketsHandler}
+            >
+              Editar
             </Button>
             <Button
               variant="contained"
@@ -71,6 +80,15 @@ const VerTickets = (props) => {
       )
   }
 
+  const content = (id, codigoProducto) => {
+    return (
+      <>
+        <p>¿Desea eliminar el Ticket {id} asociado al Producto {codigoProducto}? </p>
+        <p><center> <strong> Esta acción no será reversible </strong></center></p>
+      </>
+    )
+  }
+
   const url = `https://aninfo-psa-soporte.herokuapp.com/producto/${location.state.codigoProducto}-${location.state.version}/ticket`
   useEffect(() => {
     obtenerTickets();
@@ -79,8 +97,10 @@ const VerTickets = (props) => {
     <>
       <h3>LiSTADO DE TICKETS - Producto {location.state.codigoProducto} (Versión {location.state.version})</h3>
       <ConfirmModal
-        content="Estas seguro que queres borrar el ticket?"
+        content={content(ticketABorrar?.id, ticketABorrar?.codigoProducto)}
         open={showModal}
+        textoConfirmar="Eliminar"
+        textoCancelar="Cancelar"
         setOpen={setShowModal}
         onConfirm={onEliminarTicketModalHandler}
       />

@@ -11,6 +11,13 @@ const ConsultarProyectos = () => {
   const [proyectoElegido, setProyectoElegido] = useState();
   let history = useHistory();
 
+  const onChangeSelectHandler = (version, codigoProducto, params) => {
+    params.row.versionElegida = {
+      codigoProducto: codigoProducto,
+      version: version
+    };
+  }
+
   const columns = [
     { field: 'id', headerName: 'Codigo', width: 110 },
     { field: 'nombre', headerName: 'Nombre', sortable: false, width: 150 },
@@ -26,10 +33,18 @@ const ConsultarProyectos = () => {
            setProyectoElegido(params.row.proyectoElegido)
            history.push({
              pathname: '/ver-proyecto',
-             state: {
-               codigoProyecto: params.row.proyectoElegido.Codigo,
-              //  version: params.row.proyectoElegido.codigo
-             }
+            //  state: {
+            //   //  codigoProyecto: params.row.proyectoElegido.Codigo,
+            //   //  version: params.row.proyectoElegido.codigo
+            //  }
+            state: {
+             codigoProyecto: params.row.id, 
+             nombreProyecto: params.row.nombre,
+             liderProyecto: params.row.liderDeProyecto,
+             descripcion: params.row.descripcion,
+             estado: params.row.estado,
+             fechaCreacion: params.row.fechaCreacion
+            }
            });
          };
 

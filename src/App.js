@@ -6,10 +6,16 @@ import ConsultarHoras from './pages/Recursos/ConsultarHoras';
 import CargarHoras from './pages/Recursos/CargarHoras';
 import ConsultarProductos from './pages/Soporte/ConsultarProductos';
 import ConsultarTickets from './pages/Soporte/ConsultarTickets';
-import VerTicket from './pages/Soporte/VerTickets';
+import VerTickets from './pages/Soporte/VerTickets';
+import VerTicket from './pages/Soporte/VerTicket';
 import Layout from './components/layout/Layout';
 import ConsultarProyectos from './pages/Proyectos/ConsultarProyectos';
 import CrearProyecto from './pages/Proyectos/CrearProyecto';
+import VerProyecto from './pages/Proyectos/VerProyecto';
+import VerTarea from './pages/Proyectos/VerTarea';
+import CrearTarea from './pages/Proyectos/CrearTarea';
+import EditarProyecto from './pages/Proyectos/EditarProyecto';
+import EditarTarea from './pages/Proyectos/EditarTarea';
 
 function App() {
   return (
@@ -19,6 +25,9 @@ function App() {
           <Home/>
         </Route>
         <Route path='/ver-tickets'>
+          <VerTickets />
+        </Route>
+        <Route path='/ver-ticket'>
           <VerTicket />
         </Route>
         <Route path='/crear-ticket'>
@@ -41,6 +50,21 @@ function App() {
         </Route>
         <Route path='/crear-proyecto'>
           <CrearProyecto />
+        </Route>
+        <Route path='/ver-proyecto'>
+          <VerProyecto />
+        </Route>
+        <Route path='/ver-tarea'>
+          <VerTarea />
+        </Route>
+        <Route path='/crear-tarea'>
+          <CrearTarea />
+        </Route>
+        <Route path='/editar-proyecto'>
+          <EditarProyecto />
+        </Route>
+        <Route path='/editar-tarea'>
+          <EditarTarea />
         </Route>
         <Route path='*'>
           <NotFound />

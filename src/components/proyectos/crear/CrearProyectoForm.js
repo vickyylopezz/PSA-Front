@@ -1,7 +1,4 @@
 import react, { useState, useEffect } from 'react';
-import {
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Autocomplete, NativeSelect } from '@mui/material';
 import {
@@ -25,8 +22,9 @@ import { Form, Field } from 'react-final-form';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useHistory } from "react-router-dom";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 const validate = values => {
   const errors = {};
@@ -44,7 +42,7 @@ const validate = values => {
 
 const onSubmit = async values => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  await sleep(300);
+  await sleep(600);
   window.alert(JSON.stringify(values, 0, 2));
 };
 
@@ -58,30 +56,50 @@ const diaHoy = () => {
     return today;
 }
 
-const CrearTareaForm = (props) => {
+const CrearProyectoForm = (props) => {
   const location = useLocation();
-  const [empleados, setEmpleados] = useState([]);
-  const [value, setValue] = React.useState(diaHoy);
-
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
+  const [lideres, setLideres] = useState([]);
+  const [descripcion, setDescripcion] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [lider, setLider] = useState('');
+  const [estado, setEstado] = useState('');
+  const [fechaCreacion, setFechaCreacion] = React.useState(diaHoy);
+  const [id, setId] = useState('');
+  let history = useHistory();
 
   useEffect(() => {
-    fetch("https://aninfo-psa-soporte.herokuapp.com/cliente") //Cambiar por empleados
+    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados") 
       .then(res => res.json())
       .then(
         (data) => {
-          setEmpleados(data);
+          setLideres(data);
         }
       )
   }, [])
+
+   const crearProyecto = () => {
+     const requestOptions = {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+          descripcion: descripcion,
+          estado: estado,
+          fechaCreacion: fechaCreacion,
+          id: id,
+          liderDeProyecto: lider,
+          nombre: nombre,
+       })
+     };
+     fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos`, requestOptions)
+       .then(response => response.json())
+       .then(history.push('/consultar-proyectos'))
+    }
 
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Crear Tarea - [{location.state.codigoProyecto}] {location.state.nombre}
+        Crear Proyecto
       </Typography>
       <Form
         onSubmit={onSubmit}
@@ -98,7 +116,9 @@ const CrearTareaForm = (props) => {
                     name="nombre"
                     component={TextField}
                     type="text"
-                    label="Nombre de la Tarea"
+                    label="Nombre del proyecto"
+                    onChange={(event) => setNombre(event.target.value)}
+
                   />
                 </Grid>
                 <Grid item xs={12} style={{ marginTop: 16 }}>
@@ -109,7 +129,9 @@ const CrearTareaForm = (props) => {
                     component={TextField}
                     multiline
                     type="text"
-                    label="Descripción de la Tarea"
+                    label="Descripción del proyecto"
+                    onChange={(event) => setDescripcion(event.target.value)}
+
                   />
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
@@ -122,34 +144,58 @@ const CrearTareaForm = (props) => {
                     disabled
                     id="controllable-states-demo"
                     sx={{ width: 300 }}
+                    onChange={(event, value) => setEstado("CREADO")}
+
                   >
-                    <option>Creada</option>
+                    <option>CREADO</option>
                   </NativeSelect>
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                  <Autocomplete
+                  {/* <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                    options={empleados}
-                    getOptionLabel={(option) => option.razonSocial} //Cambiar por nombre persona asignada
+                    options={lideres}
+                    getOptionLabel={(option) => option.legajo} //Cambiar por legajo personas
                     sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Persona asignada *" />}
-                  />
+                    renderInput={(params) => <TextField {...params} label="Lider *" />}
+                  /> */}
+                  <InputLabel required variant="standard" htmlFor="proyecto">
+                        Lider
+                  </InputLabel>
+                  <Select
+                    required
+                    fullWidth
+                    name="liderProyecto"
+                    labelId="demo-simple-select-label"
+                    id="liderProyecto"
+                    label="Lider"
+                    formControlProps={{ fullWidth: true }}
+                    onChange={(event, value) => setLider(value.props.value)}
+                  >
+                    {
+                      lideres.map((s) => {
+                        return (
+                          <MenuItem value={s.legajo}>{s.Nombre} {s.Apellido} </MenuItem>
+                        )
+                      })
+                    }
+                  </Select>
+                  
                 </Grid>
                 <LocalizationProvider item dateAdapter={AdapterDateFns}>
                     <Grid item style={{ marginTop: 32 }} xs={6}>
                       <MobileDatePicker
+                        label="Fecha de Creación"
+                        inputFormat="dd/MM/yyyy"
+                        value={fechaCreacion}
                         disabled
-                        label="Fecha creación"
-                        inputFormat="MM/dd/yyyy"
-                        value={value}
-                        onChange={handleChange}
+                        onChange={(value) => setFechaCreacion(fechaCreacion)}
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Grid>
                     <Grid item xs={6} />
                 </LocalizationProvider>
-                <Grid item style={{ marginTop: 32 }}>
+                {/* <Grid item style={{ marginTop: 32 }}>
                   <Button
                     type="button"
                     variant="contained"
@@ -158,15 +204,17 @@ const CrearTareaForm = (props) => {
                   >
                     Reset
                   </Button>
-                </Grid>
-                <Grid item style={{ marginTop: 32, marginLeft:16 }}>
+                </Grid> */}
+                <Grid container xs={12} justifyContent="flex-end" style={{ padding:10 }}>
                   <Button
                     variant="contained"
                     color="primary"
                     type="submit"
                     disabled={submitting}
+                    onClick={() => crearProyecto()}
+
                   >
-                    Submit
+                    Crear Proyecto
                   </Button>
                 </Grid>
               </Grid>
@@ -180,4 +228,4 @@ const CrearTareaForm = (props) => {
 
 };
 
-export default CrearTareaForm;
+export default CrearProyectoForm;
