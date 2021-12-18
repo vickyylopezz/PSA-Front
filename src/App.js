@@ -16,6 +16,7 @@ import VerTarea from './pages/Proyectos/VerTarea';
 import CrearTarea from './pages/Proyectos/CrearTarea';
 import EditarProyecto from './pages/Proyectos/EditarProyecto';
 import EditarTarea from './pages/Proyectos/EditarTarea';
+import EditarHora from './pages/Recursos/EditarHora';
 
 function App() {
   return (
@@ -65,6 +66,9 @@ function App() {
         </Route>
         <Route path='/editar-tarea'>
           <EditarTarea />
+        </Route>
+        <Route path='/editar-hora'>
+          <EditarHora />
         </Route>
         <Route path='*'>
           <NotFound />
