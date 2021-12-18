@@ -9,11 +9,11 @@ const VerTickets = (props) => {
   const location = useLocation();
 
   const columns = [
-    { field: 'id', headerName: 'ID', sortable: false, width: 50 },
+    { field: 'id', headerName: 'ID', sortable: false, width: 50,flex: 1 },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
-    { field: 'descripcion', headerName: 'Descripcion', sortable: false, width: 150 },
+    { field: 'descripcion', headerName: 'Descripcion', sortable: false, width: 150,flex: 1 },
     {
-      field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,
+      field: 'acciones', headerName: 'Acciones', sortable: false, width: 300,flex: 1,
       renderCell: (params) => {
         const onVerTicketsHandler = () => {
 
