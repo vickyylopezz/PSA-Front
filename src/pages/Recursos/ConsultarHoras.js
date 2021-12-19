@@ -69,7 +69,7 @@ const ConsultarHoras = () => {
     { field: 'tarea', headerName: 'Tarea', sortable: false, width: 180},
     { field: 'horas', headerName: 'Horas', sortable: false, width: 150 },
     { field: 'fecha', headerName: 'Fecha', sortable: false, width: 200},
-    {field: 'acciones', headerName: 'operaciones', sortable: false, width: 150,
+    {field: 'acciones', headerName: 'acciones', sortable: false, width: 150,
       renderCell: (params) => {
           const onEditarHoraHandler = (event) => {
             setHoraElegida(params.row.horaElegida) 
