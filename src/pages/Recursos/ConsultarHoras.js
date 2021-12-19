@@ -93,7 +93,7 @@ const ConsultarHoras = () => {
          };
 
          const onEliminarHoraHandler = (id) => {
-            //setShowModal(true);
+            setShowModal(true);
             setHoraABorrar({
               id: id,
             })
