@@ -42,7 +42,7 @@ const validate = values => {
 
 const onSubmit = async values => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  await sleep(600);
+  await sleep(1000);
   window.alert(JSON.stringify(values, 0, 2));
 };
 
@@ -151,14 +151,6 @@ const CrearProyectoForm = (props) => {
                   </NativeSelect>
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                  {/* <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={lideres}
-                    getOptionLabel={(option) => option.legajo} //Cambiar por legajo personas
-                    sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Lider *" />}
-                  /> */}
                   <InputLabel required variant="standard" htmlFor="proyecto">
                         Lider
                   </InputLabel>
@@ -210,7 +202,8 @@ const CrearProyectoForm = (props) => {
                     variant="contained"
                     color="primary"
                     type="submit"
-                    disabled={submitting}
+                    disabled={!nombre || !descripcion || !lider}
+                    
                     onClick={() => crearProyecto()}
 
                   >

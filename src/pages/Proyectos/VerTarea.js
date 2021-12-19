@@ -1,5 +1,5 @@
-import react, { useState, useEffect } from 'react';
-import { Autocomplete, Box, NativeSelect } from '@mui/material';
+import react, { useState, useEffect } from "react";
+import { Autocomplete, Box, NativeSelect } from "@mui/material";
 import {
   Typography,
   Paper,
@@ -15,108 +15,126 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-} from '@material-ui/core';
-import React from 'react';
-import { Form, Field } from 'react-final-form';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import MobileDatePicker from '@mui/lab/MobileDatePicker';
+} from "@material-ui/core";
+import React from "react";
+import { Form, Field } from "react-final-form";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
 import { useLocation } from "react-router-dom";
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import ConfirmModal from "../../components/common/ConfirmModal";
+import Popover from "@mui/material/Popover";
 
-const validate = values => {
+const validate = (values) => {
   const errors = {};
   if (!values.firstName) {
-    errors.firstName = 'Required';
+    errors.firstName = "Required";
   }
   if (!values.lastName) {
-    errors.lastName = 'Required';
+    errors.lastName = "Required";
   }
   if (!values.email) {
-    errors.email = 'Required';
+    errors.email = "Required";
   }
   return errors;
 };
 
-const onSubmit = async values => {
-  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  await sleep(300);
+const onSubmit = async (values) => {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await sleep(600);
   window.alert(JSON.stringify(values, 0, 2));
 };
-
-const diaHoy = () => {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    today = mm + '/' + dd + '/' + yyyy;
-    return today;
-}
 
 const VerTarea = (props) => {
   const location = useLocation();
   const [empleados, setEmpleados] = useState([]);
-  const [value, setValue] = React.useState(diaHoy);
-  const [personaAsignada, setPersonaAsignada] = useState('');
+  const [personaAsignada, setPersonaAsignada] = useState("");
   const [personasAsignadas, setPersonasAsignadas] = useState([]);
   const [open, setOpen] = React.useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [tareaABorrar, setTareaABorrar] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [popoverOpen, setPopoverOpen] = React.useState(false);
 
   let history = useHistory();
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
   };
 
-  const handleCloseEliminar = () => {
-    setOpen(false);
-    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${location.state.codigoProyecto}/tareas/${location.state.codigoTarea}`, { method: 'DELETE' })
-    .then(() => history.push({
-        pathname: '/ver-proyecto',
+  const openPop = Boolean(anchorEl);
+
+  const onEliminarTareaModalHandler = () => {
+    fetch(
+      `https://modulo-proyectos-squad7.herokuapp.com/proyectos/${tareaABorrar.codigoProyecto}/tareas/${tareaABorrar.id}`,
+      { method: "DELETE" }
+    ).then(() =>
+      history.push({
+        pathname: "/ver-proyecto",
         state: {
-           codigoProyecto: location.state.codigoProyecto,
-           nombreProyecto: location.state.nombreProyecto,
-           liderProyecto: location.state.liderProyecto,
-           descripcion: location.state.descripcion,
-           estado: location.state.estado,
-           fechaCreacion: location.state.fechaCreacion
-        }
-      }));
-  }
+          codigoProyecto: location.state.codigoProyecto,
+          nombreProyecto: location.state.nombreProyecto,
+          liderProyecto: location.state.liderProyecto,
+          descripcion: location.state.descripcion,
+          estado: location.state.estado,
+          fechaCreacion: location.state.fechaCreacion,
+        },
+      })
+    );
+  };
 
-  const handleCloseNoEliminar = () => {
-    setOpen(false);
-  }
+  const onEliminarTareaHandler = (id, codigoProyecto) => {
+    setShowModal(true);
+    setTareaABorrar({
+      id: id,
+      codigoProyecto: codigoProyecto,
+    });
+  };
+
+  const content = (id, nombreTarea, codigoProyecto, nombreProyecto) => {
+    return (
+      <>
+        <p>
+          ¿Desea eliminar la Tarea {id} con nombre {nombreTarea} perteneciente
+          al proyecto [{codigoProyecto}] - {nombreProyecto}?{" "}
+        </p>
+        <p>
+          <center>
+            {" "}
+            <strong> Esta acción no será reversible </strong>
+          </center>
+        </p>
+      </>
+    );
+  };
 
   useEffect(() => {
     fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados") //Cambiar por empleados
-      .then(res => res.json())
-      .then(
-        (data) => {
-          setPersonasAsignadas(data);
-        }
-      )
-  }, [])
+      .then((res) => res.json())
+      .then((data) => {
+        setPersonasAsignadas(data);
+      });
+  }, []);
 
   return (
-    <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
+    <div style={{ padding: 16, margin: "auto", maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Tarea [ {location.state.codigoTarea} ] 
+        Tarea [ {location.state.codigoTarea} ]
       </Typography>
       <Form
         onSubmit={onSubmit}
-        initialValues={{ employed: true, stooge: 'larry' }}
+        initialValues={{ employed: true, stooge: "larry" }}
         validate={validate}
         render={({ handleSubmit, reset, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -150,9 +168,9 @@ const VerTarea = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                  <InputLabel shrink htmlFor="uncontrolled-native" >
+                  <InputLabel shrink htmlFor="uncontrolled-native">
                     Estado
-                  </InputLabel> 
+                  </InputLabel>
                   <Select
                     required
                     readOnly="true"
@@ -163,26 +181,13 @@ const VerTarea = (props) => {
                     label="Estado"
                     defaultValue={location.state.estadoTarea}
                   >
-                    <MenuItem value="CREADA">CREADO</MenuItem>
+                    <MenuItem value="CREADA">CREADA</MenuItem>
                     <MenuItem value="ENCURSO">EN CURSO</MenuItem>
-                    <MenuItem value="FINALIZADA"> FINALIZADO</MenuItem>
-                    
+                    <MenuItem value="FINALIZADA"> FINALIZADA</MenuItem>
                   </Select>
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                  {/* <Select
-                      required
-                      readOnly="true"
-                      fullWidth
-                      name="estado"
-                      labelId="demo-simple-select-label"
-                      id="estado"
-                      label="Estado"
-                      defaultValue={location.state.legajoPersona.toString()}
-                    >
-                      <MenuItem value={location.state.legajoPersona.toString()}>{location.state.legajoPersona.toString()}</MenuItem>
-                    </Select> */}
-                    <InputLabel shrink htmlFor="uncontrolled-native" >
+                  <InputLabel shrink htmlFor="uncontrolled-native">
                     Persona Asignada
                   </InputLabel>
                   <Select
@@ -195,85 +200,72 @@ const VerTarea = (props) => {
                     label="Persona Asignada"
                     formControlProps={{ fullWidth: true }}
                     defaultValue={location.state.legajoPersona}
-                    onChange={(event, value) => setPersonaAsignada(value.props.value)}
-                  >
-                    {
-                      personasAsignadas.map((s) => {
-                        return (
-                          <MenuItem value={s.legajo}>{s.Nombre} {s.Apellido} </MenuItem>
-                        )
-                      })
+                    onChange={(event, value) =>
+                      setPersonaAsignada(value.props.value)
                     }
+                  >
+                    {personasAsignadas.map((s) => {
+                      return (
+                        <MenuItem value={s.legajo}>
+                          {s.Nombre} {s.Apellido}{" "}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </Grid>
-                {/* <LocalizationProvider item dateAdapter={AdapterDateFns}>
-                    <Grid item style={{ marginTop: 32 }} xs={6}>
-                      <MobileDatePicker
-                        readOnly="true"
-                        label="Fecha creación"
-                        inputFormat="MM/dd/yyyy"
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </Grid>
-                    <Grid item xs={6} />
-                </LocalizationProvider> */}
-                <Grid container xs={12} spacing={2} justifyContent="flex-end" style={{ padding:10 }} style={{ marginTop: 32}}>
+                <Grid
+                  container
+                  xs={12}
+                  spacing={2}
+                  justifyContent="flex-end"
+                  style={{ padding: 10 }}
+                  style={{ marginTop: 32 }}
+                >
                   <Box paddingRight={2} paddingBottom={2}>
                     <Button
-                      type="button"
+                      type="error"
                       variant="contained"
-                      onClick={handleClickOpen}
+                      onClick={() =>
+                        onEliminarTareaHandler(
+                          location.state.codigoTarea,
+                          location.state.codigoProyecto
+                        )
+                      }
                       grid
                       color="primary"
-                      style={{backgroundColor: "#D32F2F"}}
+                      id="eliminar"
+                      disabled={location.state.estadoTarea == "FINALIZADA" || location.state.estado == "FINALIZADO"}
+                      style={{ backgroundColor: "#D32F2F" }}
+                      aria-owns={openPop ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      onMouseEnter={handlePopoverOpen}
+                      onMouseLeave={handlePopoverClose}
                     >
                       Eliminar
                     </Button>
-                    <Dialog
-                      open={open}
-                      //onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                    <DialogTitle id="alert-dialog-title">
-                      {"Seguro que desea eliminar la tarea?"}
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Al eliminar la tarea no podrá recuperarla.
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleCloseEliminar}>Si</Button>
-                      <Button onClick={handleCloseNoEliminar} autoFocus>
-                        No
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
                   </Box>
                   <Box paddingBottom={2}>
                     <Button
                       variant="contained"
                       color="primary"
                       type="submit"
-                      onClick={ () =>
+                      disabled={location.state.estadoTarea == "FINALIZADA" || location.state.estado == "FINALIZADO"}
+                      onClick={() =>
                         history.push({
-                          pathname: '/editar-tarea',
+                          pathname: "/editar-tarea",
                           state: {
-                             codigoTarea: location.state.codigoTarea,
-                             nombreTarea: location.state.nombreTarea,
-                             descripcionTarea: location.state.descripcionTarea,
-                             estadoTarea: location.state.estadoTarea,
-                             legajoPersona: location.state.legajoPersona,
-                             codigoProyecto: location.state.codigoProyecto,
-                             nombreProyecto: location.state.nombreProyecto,
-                             liderProyecto: location.state.liderProyecto,
-                             descripcion: location.state.descripcion,
-                             estado: location.state.estado,
-                             fechaCreacion: location.state.fechaCreacion
-                          }
+                            codigoTarea: location.state.codigoTarea,
+                            nombreTarea: location.state.nombreTarea,
+                            descripcionTarea: location.state.descripcionTarea,
+                            estadoTarea: location.state.estadoTarea,
+                            legajoPersona: location.state.legajoPersona,
+                            codigoProyecto: location.state.codigoProyecto,
+                            nombreProyecto: location.state.nombreProyecto,
+                            liderProyecto: location.state.liderProyecto,
+                            descripcion: location.state.descripcion,
+                            estado: location.state.estado,
+                            fechaCreacion: location.state.fechaCreacion,
+                          },
                         })
                       }
                     >
@@ -281,21 +273,33 @@ const VerTarea = (props) => {
                     </Button>
                   </Box>
                 </Grid>
-                {/* <Grid container xs={12} justifyContent="flex-end" style={{ padding:10 }} style={{ marginTop: 32}}>
-                </Grid> */}
               </Grid>
             </Paper>
           </form>
-        )
-        }
+        )}
+      />
+      <ConfirmModal
+        content={content(
+          location.state.codigoTarea,
+          location.state.nombreTarea,
+          location.state.codigoProyecto,
+          location.state.nombreProyecto
+        )}
+        open={showModal}
+        textoConfirmar="Eliminar"
+        textoCancelar="Cancelar"
+        setOpen={setShowModal}
+        onConfirm={onEliminarTareaModalHandler}
       />
       <div style={{ marginTop: 20 }}>
-          <Button variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: 16 }}
-            onClick={() => history.push({
-              pathname:'/ver-proyecto',
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ marginLeft: 16 }}
+          onClick={() =>
+            history.push({
+              pathname: "/ver-proyecto",
               state: {
                 codigoTarea: location.state.codigoTarea,
                 nombreTarea: location.state.nombreTarea,
@@ -307,14 +311,16 @@ const VerTarea = (props) => {
                 liderProyecto: location.state.liderProyecto,
                 descripcion: location.state.descripcion,
                 estado: location.state.estado,
-                fechaCreacion: location.state.fechaCreacion
-              }})}>Volver</Button>
-        </div>
-    </div >
-    
-    
+                fechaCreacion: location.state.fechaCreacion,
+              },
+            })
+          }
+        >
+          Volver
+        </Button>
+      </div>
+    </div>
   );
-
 };
 
 export default VerTarea;
