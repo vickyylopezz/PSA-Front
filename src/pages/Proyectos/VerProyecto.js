@@ -10,14 +10,6 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import PersonIcon from "@mui/icons-material/Person";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import EventIcon from "@mui/icons-material/Event";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import ConfirmModal from "../../components/common/ConfirmModal";
 
 const VerProyecto = (props) => {
@@ -62,7 +54,7 @@ const VerProyecto = (props) => {
     { field: "estado", headerName: "Estado", sortable: false, width: 150 },
     {
       field: "legajoPersonaAsignada",
-      headerName: "Legajo",
+      headerName: "Persona asignada",
       sortable: false,
       width: 150,
       renderCell: (params) => {

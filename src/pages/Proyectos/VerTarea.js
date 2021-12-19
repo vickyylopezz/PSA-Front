@@ -1,5 +1,5 @@
 import react, { useState, useEffect } from "react";
-import { Autocomplete, Box, NativeSelect } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   Typography,
   Paper,
@@ -10,40 +10,12 @@ import {
   TextField,
   Select,
   InputLabel,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
 } from "@material-ui/core";
 import React from "react";
-import { Form, Field } from "react-final-form";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import MobileDatePicker from "@mui/lab/MobileDatePicker";
+import { Form } from "react-final-form";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import ConfirmModal from "../../components/common/ConfirmModal";
-import Popover from "@mui/material/Popover";
-
-const validate = (values) => {
-  const errors = {};
-  if (!values.firstName) {
-    errors.firstName = "Required";
-  }
-  if (!values.lastName) {
-    errors.lastName = "Required";
-  }
-  if (!values.email) {
-    errors.email = "Required";
-  }
-  return errors;
-};
 
 const onSubmit = async (values) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -53,14 +25,12 @@ const onSubmit = async (values) => {
 
 const VerTarea = (props) => {
   const location = useLocation();
-  const [empleados, setEmpleados] = useState([]);
   const [personaAsignada, setPersonaAsignada] = useState("");
   const [personasAsignadas, setPersonasAsignadas] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tareaABorrar, setTareaABorrar] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [popoverOpen, setPopoverOpen] = React.useState(false);
 
   let history = useHistory();
 
@@ -135,7 +105,6 @@ const VerTarea = (props) => {
       <Form
         onSubmit={onSubmit}
         initialValues={{ employed: true, stooge: "larry" }}
-        validate={validate}
         render={({ handleSubmit, reset, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Paper style={{ padding: 16 }}>
@@ -234,7 +203,10 @@ const VerTarea = (props) => {
                       grid
                       color="primary"
                       id="eliminar"
-                      disabled={location.state.estadoTarea == "FINALIZADA" || location.state.estado == "FINALIZADO"}
+                      disabled={
+                        location.state.estadoTarea == "FINALIZADA" ||
+                        location.state.estado == "FINALIZADO"
+                      }
                       style={{ backgroundColor: "#D32F2F" }}
                       aria-owns={openPop ? "mouse-over-popover" : undefined}
                       aria-haspopup="true"
@@ -249,7 +221,10 @@ const VerTarea = (props) => {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      disabled={location.state.estadoTarea == "FINALIZADA" || location.state.estado == "FINALIZADO"}
+                      disabled={
+                        location.state.estadoTarea == "FINALIZADA" ||
+                        location.state.estado == "FINALIZADO"
+                      }
                       onClick={() =>
                         history.push({
                           pathname: "/editar-tarea",
