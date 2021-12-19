@@ -170,8 +170,12 @@ const CrearIncidenciaForm = (props) => {
       setEsError(value);
   }
 
+  const editarTicket = () => {
+
+  }
+
   const crearTicket = () => {
-    let ticketId = 0;
+    let idTicket = 0;
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -189,10 +193,10 @@ const CrearIncidenciaForm = (props) => {
     };
     fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket`, requestOptions)
       .then(response => response.json())
-      .then(data => ticketId = data.id)
+      .then(data => idTicket = data.id)
       .then(() => {
         if (esError) {
-          asociarTareas(ticketId);
+          asociarTareas(idTicket);
         }
         history.push('/consultar-productos');
       })
@@ -429,9 +433,9 @@ const CrearIncidenciaForm = (props) => {
                         variant="contained"
                         color="primary"
                         type="button"
-                        onClick={() => crearTicket()}
+                        onClick={() => ticketId === 0 ? crearTicket() : editarTicket()}
                       >
-                        Crear ticket
+                        {ticketId === 0 ? "Crear ticket" : "Guardar cambios"}
                       </Button>
                     </Grid>
                   </>

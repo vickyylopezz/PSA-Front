@@ -44,9 +44,9 @@ const VerTickets = (props) => {
             pathname: '/crear-ticket',
             state: {
               readOnly: false,
-              isNewTicket: false,
-              codigoProducto: params.row.versionElegida.codigoProducto,
-              version: params.row.versionElegida.version
+              ticketId: params.row.id,
+              codigoProducto: params.row.codigoProducto,
+              version: params.row.version
             }
           });
         }
