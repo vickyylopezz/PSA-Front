@@ -51,8 +51,8 @@ const EditarHoraForm = (props) => {
   const [proyecto, setProyecto] = useState(location.state.proyecto);
   const [tarea, setTarea] = useState(location.state.tarea);
   const [fecha, setFecha] = useState(location.state.fecha);
-  const [hora, setHora] = useState(location.state.hora);
-  const [id, setId] = useState('');
+  const [horas, setHora] = useState(location.state.hora);
+  const [id, setId] = useState(location.state.id);
   let history = useHistory();
 
   const handleChange = (newValue) => {
@@ -61,22 +61,18 @@ const EditarHoraForm = (props) => {
 
   const editarHora = () => {
     const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-         codigo: location.state.hora_id,
-         hora: hora
-      })
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' }
     };
-    fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${location.state.codigoProyecto}`, requestOptions)
+    fetch(`https://api-recursos.herokuapp.com/recursos/ModificarHoras/${location.state.id}?cantidad_horas=${horas}`, requestOptions)
       .then(response => response.json())
       .then(history.push({
         pathname:'/consultar-horas',
         state: {
-          hora_id: location.state.hora_id, 
-          proyecto: location.state.nombre,
+          id: location.state.id, 
+          proyecto: location.state.proyecto,
           tarea: location.state.tarea,
-          hora: hora,
+          horas: horas,
           fecha: location.state.fecha
         }}))
    }
@@ -102,9 +98,13 @@ const EditarHoraForm = (props) => {
                     required
                     name="proyecto"
                     id="outlined-read-only-input"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     label="Proyecto"
                     type="text"
                     onChange={(event) => setProyecto(event.target.value)}
+                    
                   />
                 </Grid>
                 <Grid item xs={12} style={{ marginTop: 16 }}>
@@ -116,6 +116,9 @@ const EditarHoraForm = (props) => {
                     multiline
                     type="text"
                     id="outlined-read-only-input"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     label="Tarea"
                     onChange={(event) => setTarea(event.target.value)}
                   />
@@ -127,6 +130,7 @@ const EditarHoraForm = (props) => {
                         inputFormat="dd/MM/yyyy"
                         value={fecha}
                         onChange={handleChange}
+                        defaultValue={location.state.fecha}
                         disabled
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -135,13 +139,13 @@ const EditarHoraForm = (props) => {
                 </LocalizationProvider>
                 <Grid item xs={12}>
                   <TextField
-                    defaultValue={location.state.hora}
+                    defaultValue={location.state.horas}
                     fullWidth
                     required
                     name="hora"
                     onChange={(event) => setHora(event.target.value)}
                     multiline
-                    label="Proyecto"
+                    label="Hora"
                     type="text"
                   />
                 </Grid>
@@ -152,7 +156,7 @@ const EditarHoraForm = (props) => {
                         type="button"
                         onClick={() => editarHora()}
                     >
-                        Cargar
+                        Editar
                     </Button>                    
                     </Grid>
               </Grid>

@@ -12,7 +12,7 @@ import axios from 'axios';
 const ConsultarHoras = () => {
   const [horas, setHoras] = useState([]);
   const [proyectos, setProyectos] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
   const [horaElegida, setHoraElegida] = useState();
   const [horaABorrra, setHoraABorrar] = useState(null);
   const [isBusy, setBusy] = useState(true)
@@ -20,55 +20,38 @@ const ConsultarHoras = () => {
   let history = useHistory();
   const location = useLocation();
 
-  useEffect(() => {
-    setBusy(true);
+  useEffect( async () => {
+    
     async function fetchData() {
-      
-      // axios.get("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2").then((response) => {
-      //   setHoras(groupHoras(response));
-      //   setBusy(false);
-      // });
-      
-      fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
-        .then(res => res.json())
-        .then(
-          (data) => {
-            groupHoras(data);
-          }
-        )
-        setBusy(false);
+      setBusy(true);
+      setHoras([]);
+    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
+      .then(res => res.json())
+      .then((data) => {
+        data.map(d => {
+          fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
+            .then(res => res.json())
+            .then((res) => {
+              fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}/tareas/${d.tarea_id}`)
+              .then((aux)=> aux.json())
+              .then((aux) =>{
+                setHoras(prev => [...prev, {
+                  id:d.carga_id,
+                  proyecto: res.nombre,
+                  tarea: aux.nombre,
+                  horas: d.horas,
+                  fecha: d.fecha            
+                }])
+              })
+              
+            })
+        })
+      })
+      setBusy(false);
     }
-
     fetchData();
-
-
   }, [])
 
-
-  const groupHoras = (data) => {
-    setBusy(true);
-    let tempHoras = [];
-    data.map((d) => {
-    
-      fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
-        .then(res => res.json())
-        .then((res) => {
-          setProyectos(res.nombre);
-        })
-    })
-    data.map((d) => {
-      tempHoras.push({
-        id: d.carga_id,
-        proyecto: proyectos,
-        tarea: d.tarea_id,
-        horas: d.horas,
-        fecha: d.fecha,
-      });
-    })
-    
-    setHoras(tempHoras);
-    setBusy(false);
-  };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 150, hide: 'true' },
@@ -76,20 +59,20 @@ const ConsultarHoras = () => {
     { field: 'tarea', headerName: 'Tarea', sortable: false, width: 180},
     { field: 'horas', headerName: 'Horas', sortable: false, width: 150 },
     { field: 'fecha', headerName: 'Fecha', sortable: false, width: 200},
-    {
-      field: 'acciones', headerName: 'operaciones', sortable: false, width: 100,
+    {field: 'acciones', headerName: 'operaciones', sortable: false, width: 150,
       renderCell: (params) => {
-          const onEditarHoraHandler = () => {
-           history.push({
-             pathname: '/editar-tarea',
-             state: {
-               horaCodigo: location.hora_id,
-               proyecto: location.proyecto,
-               tarea: location.tarea,
-               fecha: location.fecha,
-               hora: location.hora
-             }
-           });
+          const onEditarHoraHandler = (event) => {
+            setHoraElegida(params.row.horaElegida) 
+            history.push({
+              pathname: '/editar-hora',
+              state: {
+                id: params.row.id,
+                proyecto: params.row.proyecto,
+                tarea: params.row.tarea,
+                fecha: params.row.fecha,
+                horas: params.row.horas
+              }
+            });
          };
 
          const onEliminarHoraHandler = (id) => {

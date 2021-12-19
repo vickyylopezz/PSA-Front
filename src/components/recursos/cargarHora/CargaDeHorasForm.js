@@ -160,14 +160,24 @@ const CargaDeHorasForm = (props) => {
                                     </Select>        
                                 </Grid>
                                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                                    <Autocomplete
-                                        disablePortal
-                                        id="tags-standard"
-                                        options={tareas}
-                                        getOptionLabel={(option) => option.nombre}
-                                        onChange = {(event) => setTarea_id(event.target.value)}
-                                        renderInput={(params) => <TextField {...params} label="Tareas *" />}
-                                    />
+                                    <Select
+                                       required
+                                       fullWidth
+                                       name="tarea"
+                                       labelId="demo-simple-select-label"
+                                       id="tarea"
+                                       label="tarea"
+                                       formControlProps={{ fullWidth: true }}
+                                        onChange = {(event , value) => setTarea_id(value.props.value)}
+                                    >    
+                                        {
+                                            tareas.map((s) => {
+                                                return (
+                                                <MenuItem value={s.id}>{s.nombre} </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>  
                                 </Grid>
                                 <LocalizationProvider item dateAdapter={AdapterDateFns}>
                                     <Grid item style={{ marginTop: 32 }} xs={6}>

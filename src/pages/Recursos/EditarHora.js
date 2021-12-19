@@ -19,11 +19,11 @@ const EditarHora = () => {
             onClick={() => history.push({
               pathname:'/consultar-horas',
               state: {
-                hora_id: location.state.hora_id, 
+                id: location.state.id, 
                 proyecto: location.state.proyecto,
                 tarea: location.state.tarea,
                 fecha: location.state.fecha,
-                hora: location.state.hora
+                hora: location.state.horas
               }})}>Volver</Button>
         </div>
       </div>
