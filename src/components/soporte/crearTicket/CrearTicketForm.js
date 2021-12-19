@@ -129,10 +129,10 @@ const CrearIncidenciaForm = (props) => {
         setTitulo(data.titulo);
         setDescripcion(data.descripcion);
         setEstado(data.estado);
-        setSeveridad(data.severidad);
-        setFechaFinalizacion(data.fechaFinalizacion);
-        setCliente(data.cliente);
-        setPersonaAsignada(data.personaAsignada);
+        setSeveridad(data.severidad.id);
+        setFechaFinalizacion(formatDate(data.fechaFinalizacion));
+        setCliente(data.clienteId);
+        setPersonaAsignada(data.empleadoId);
       })
   }
 
@@ -325,6 +325,7 @@ const CrearIncidenciaForm = (props) => {
                     id="cliente"
                     label="Cliente"
                     disabled={readOnly}
+                    value={cliente}
                     formControlProps={{ fullWidth: true }}
                     onChange={(event, value) => setCliente(value.props.value)}
                   >

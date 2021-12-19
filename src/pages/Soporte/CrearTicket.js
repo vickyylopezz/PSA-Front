@@ -14,7 +14,7 @@ const CrearTicket = () => {
           <Button variant="contained"
             color="primary"
             size="small"
-            style={{ marginLeft: 16 }}
+            style={{ marginLeft: 217 }}
             onClick={() => history.push('/consultar-productos')}>Volver</Button>
         </div>
       </div>

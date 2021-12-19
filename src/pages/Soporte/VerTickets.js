@@ -23,9 +23,9 @@ const VerTickets = (props) => {
             pathname: '/crear-ticket',
             state: {
               readOnly: true,
-              isNewTicket: false,
-              codigoProducto: params.row.versionElegida.codigoProducto,
-              version: params.row.versionElegida.version
+              ticketId: params.row.id,
+              codigoProducto: params.row.codigoProducto,
+              version: params.row.version
             }
           });
         };
@@ -95,7 +95,18 @@ const VerTickets = (props) => {
       .then(res => res.json())
       .then(
         (data) => {
-          setTickets(data);
+          data.map(d => {
+            fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
+            .then(prod => prod.json())
+            .then((prod) => {
+              setTickets(prev => [...prev, {
+                id: d.id,
+                descripcion: d.descripcion,
+                codigoProducto: prod.codigoProducto,
+                version: prod.version
+              }])
+            })
+          })
         }
       )
   }

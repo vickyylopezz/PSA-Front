@@ -98,7 +98,7 @@ const ConsultarProductos = () => {
             pathname: '/crear-ticket',
             state: {
               readOnly: false,
-              isNewTicket: true,
+              ticketId: 0,
               codigoProducto: params.row.versionElegida.codigoProducto,
               version: params.row.versionElegida.version
             }
