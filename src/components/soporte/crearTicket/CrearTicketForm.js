@@ -188,7 +188,6 @@ const CrearIncidenciaForm = (props) => {
     };
     fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`, requestOptions)
       .then(response => response.json())
-      .then(data => ticketId = data.id)
       .then(() => {
         if (esError) {
           asociarTareas(ticketId);
