@@ -30,7 +30,7 @@ function QuickSearchToolbar(props) {
                     variant="standard"
                     value={props.value}
                     onChange={props.onChange}
-                    placeholder="Search…"
+                    placeholder={props.buscarPor}
                     InputProps={{
                         startAdornment: <SearchIcon fontSize="small" />,
                         endAdornment: (
@@ -69,6 +69,7 @@ QuickSearchToolbar.propTypes = {
     clearSearch: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
+    buscarPor: PropTypes.string
 };
 
 export default function QuickFilteringGrid(props) {
@@ -101,6 +102,7 @@ export default function QuickFilteringGrid(props) {
                         value: searchText,
                         onChange: (event) => requestSearch(event.target.value),
                         clearSearch: () => requestSearch(''),
+                        buscarPor: props.buscarPor
                     },
                 }}
                 disableColumnMenu={true}

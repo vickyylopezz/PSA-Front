@@ -19,7 +19,15 @@ const VerTickets = (props) => {
       field: 'acciones', headerName: 'Acciones', sortable: false, width: 300, flex: 1,
       renderCell: (params) => {
         const onVerTicketsHandler = () => {
-          history.push('/ver-ticket')
+          history.push({
+            pathname: '/crear-ticket',
+            state: {
+              readOnly: true,
+              isNewTicket: false,
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
         };
 
         const onEliminarTicketHandler = (id, codigoProducto, version) => {
@@ -29,6 +37,18 @@ const VerTickets = (props) => {
             codigoProducto: codigoProducto,
             version: version
           })
+        }
+
+        const onEditarTicketHandler = () => {
+          history.push({
+            pathname: '/crear-ticket',
+            state: {
+              readOnly: false,
+              isNewTicket: false,
+              codigoProducto: params.row.versionElegida.codigoProducto,
+              version: params.row.versionElegida.version
+            }
+          });
         }
 
         return (
@@ -46,7 +66,7 @@ const VerTickets = (props) => {
               color="warning"
               size="small"
               style={{ marginLeft: 16 }}
-              onClick={onVerTicketsHandler}
+              onClick={onEditarTicketHandler}
             >
               Editar
             </Button>

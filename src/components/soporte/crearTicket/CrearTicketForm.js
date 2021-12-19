@@ -61,9 +61,7 @@ const CrearIncidenciaForm = (props) => {
   const [esError, setEsError] = useState(false);
   const [cliente, setCliente] = useState('');
 
-  const codigoProducto = location.state.codigoProducto;
-  const version = location.state.version;
-
+  const { codigoProducto, version, readOnly, ticketId } = location.state;
 
   const formatDate = date => {
     var d = new Date(date),
@@ -124,11 +122,28 @@ const CrearIncidenciaForm = (props) => {
       })
   }
 
+  const obtenerTicket = () => {
+    fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`)
+      .then(res => res.json())
+      .then((data) => {
+        setTitulo(data.titulo);
+        setDescripcion(data.descripcion);
+        setEstado(data.estado);
+        setSeveridad(data.severidad);
+        setFechaFinalizacion(data.fechaFinalizacion);
+        setCliente(data.cliente);
+        setPersonaAsignada(data.personaAsignada);
+      })
+  }
+
   useEffect(() => {
     obtenerClientes();
     obtenerSeveridades();
     obtenerProyectos();
     obtenerEmpleados();
+
+    if (ticketId !== 0)
+      obtenerTicket();
   }, [])
 
   const asociarTareas = (ticketId) => {
@@ -150,6 +165,11 @@ const CrearIncidenciaForm = (props) => {
     setTareasAsignadas(value);
   }
 
+  const tipoTicketHandler = (value) => {
+    if (!readOnly)
+      setEsError(value);
+  }
+
   const crearTicket = () => {
     let ticketId = 0;
     const requestOptions = {
@@ -164,7 +184,7 @@ const CrearIncidenciaForm = (props) => {
         fechaFinalizacion: fechaFinalizacion.toString(),
         severidadId: severidad,
         tipo: esError ? "error" : "consulta",
-        title: titulo
+        titulo: titulo
       })
     };
     fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket`, requestOptions)
@@ -197,34 +217,37 @@ const CrearIncidenciaForm = (props) => {
                     <FormLabel component="legend">Tipo de ticket</FormLabel>
                     <RadioGroup
                       aria-label="ticket"
-                      defaultValue="consulta"
+                      value={esError ? "error" : "consulta"}
                       name="radio-buttons-group"
                     >
-                      <FormControlLabel value="consulta" control={<Radio />} label="Consulta" onClick={() => setEsError(false)} />
-                      <FormControlLabel value="error" control={<Radio />} label="Error" onClick={() => setEsError(true)} />
+                      <FormControlLabel value="consulta" control={<Radio />} label="Consulta" disabled={readOnly} onClick={() => tipoTicketHandler(false)} />
+                      <FormControlLabel value="error" control={<Radio />} label="Error" disabled={readOnly} onClick={() => tipoTicketHandler(true)} />
                     </RadioGroup>
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <Field
+                  <TextField
+                    id="titulo"
                     fullWidth
                     required
                     name="Titulo"
-                    component={TextField}
+                    value={titulo}
                     onChange={(event) => setTitulo(event.target.value)}
+                    disabled={readOnly}
                     type="text"
                     label="Titulo del ticket"
                   />
                 </Grid>
                 <Grid item xs={12} style={{ marginTop: 16 }}>
-                  <Field
+                  <TextField
                     name="descripcion"
                     fullWidth
                     required
-                    component={TextField}
                     onChange={(event) => setDescripcion(event.target.value)}
                     multiline
                     type="text"
+                    value={descripcion}
+                    disabled={readOnly}
                     label="Descripción del ticket"
                   />
                 </Grid>
@@ -239,7 +262,9 @@ const CrearIncidenciaForm = (props) => {
                     labelId="demo-simple-select-label"
                     id="estado"
                     label="Estado"
+                    disabled={readOnly}
                     formControlProps={{ fullWidth: true }}
+                    value={estado}
                     onChange={(event, value) => setEstado(value.props.value)}
                   >
                     <MenuItem value="Abierto">Abierto</MenuItem>
@@ -260,7 +285,9 @@ const CrearIncidenciaForm = (props) => {
                     name="severidad"
                     labelId="demo-simple-select-label"
                     id="severidad"
+                    value={severidad}
                     label="Severidad"
+                    disabled={readOnly}
                     formControlProps={{ fullWidth: true }}
                     onChange={(event, value) => setSeveridad(value.props.value)}
                   >
@@ -279,6 +306,7 @@ const CrearIncidenciaForm = (props) => {
                       label="Fecha finalización"
                       inputFormat="MM/dd/yyyy"
                       value={fechaFinalizacion}
+                      disabled={readOnly}
                       onChange={(value) => handleFechaFinalizacionChange(value)}
                       renderInput={(params) => <TextField {...params} />}
                     />
@@ -296,6 +324,7 @@ const CrearIncidenciaForm = (props) => {
                     labelId="demo-simple-select-label"
                     id="cliente"
                     label="Cliente"
+                    disabled={readOnly}
                     formControlProps={{ fullWidth: true }}
                     onChange={(event, value) => setCliente(value.props.value)}
                   >
@@ -321,6 +350,8 @@ const CrearIncidenciaForm = (props) => {
                     labelId="demo-simple-select-label"
                     id="personaAsignada"
                     label="Persona asignada"
+                    disabled={readOnly}
+                    value={personaAsignada}
                     formControlProps={{ fullWidth: true }}
                     onChange={(event, value) => setPersonaAsignada(value.props.value)}
                   >
@@ -346,6 +377,7 @@ const CrearIncidenciaForm = (props) => {
                         labelId="demo-simple-select-label"
                         id="proyecto"
                         label="Proyecto"
+                        disabled={readOnly}
                         formControlProps={{ fullWidth: true }}
                         onChange={(event, value) => onChangeProyecto(value.props.value)}
                       >
@@ -363,6 +395,7 @@ const CrearIncidenciaForm = (props) => {
                       <Autocomplete
                         onChange={(event, value) => asociarTareaHandler(value)}
                         multiple
+                        disabled={readOnly}
                         id="tags-standard"
                         options={tareas}
                         getOptionLabel={(option) => option.nombre}
@@ -378,26 +411,30 @@ const CrearIncidenciaForm = (props) => {
                   </>
                 }
 
-                <Grid item style={{ marginTop: 32 }}>
-                  <Button
-                    type="button"
-                    variant="contained"
-                    onClick={reset}
-                    disabled={submitting || pristine}
-                  >
-                    Reset
-                  </Button>
-                </Grid>
-                <Grid item style={{ marginTop: 32, marginLeft: 16 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="button"
-                    onClick={() => crearTicket()}
-                  >
-                    Crear ticket
-                  </Button>
-                </Grid>
+                {!readOnly &&
+                  <>
+                    <Grid item style={{ marginTop: 32 }}>
+                      <Button
+                        type="button"
+                        variant="contained"
+                        onClick={reset}
+                      >
+                        Reset
+                      </Button>
+                    </Grid>
+
+                    <Grid item style={{ marginTop: 32, marginLeft: 16 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="button"
+                        onClick={() => crearTicket()}
+                      >
+                        Crear ticket
+                      </Button>
+                    </Grid>
+                  </>
+                }
               </Grid>
             </Paper>
           </form>

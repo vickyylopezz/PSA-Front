@@ -6,8 +6,6 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import QuickFilteringGrid from '../../components/common/DataGrid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import axios from 'axios';
-
 
 const ConsultarHoras = () => {
   const [horas, setHoras] = useState([]);

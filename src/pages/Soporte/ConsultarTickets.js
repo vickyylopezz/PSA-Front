@@ -16,7 +16,15 @@ const ConsultarTickets = () => {
       field: 'acciones', headerName: 'Acciones', sortable: false, flex: 1,
       renderCell: (params) => {
         const onVerTicketsHandler = (event) => {
-          event.preventDefault();
+          history.push({
+            pathname: '/crear-ticket',
+            state: {
+              readOnly: true,
+              codigoProducto: params.row.codigoProducto,
+              version: params.row.version,
+              ticketId: params.row.id
+            }
+          });
         };
 
         return (
@@ -41,14 +49,22 @@ const ConsultarTickets = () => {
       .then(res => res.json())
       .then((data) => {
         data.map(d => {
+          let empleado = '';
           fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados?legajo=${d.empleadoId}`)
             .then(res => res.json())
             .then((res) => {
-              setTickets(prev => [...prev, {
-                id: d.id,
-                descripcion: d.descripcion,
-                empleado: res.Nombre + ' ' + res.Apellido
-              }])
+              empleado = res.Nombre + ' ' + res.Apellido;
+              fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
+                .then(prod => prod.json())
+                .then((prod) => {
+                  setTickets(prev => [...prev, {
+                    id: d.id,
+                    descripcion: d.descripcion,
+                    empleado: empleado,
+                    codigoProducto: prod.codigoProducto,
+                    version: prod.version
+                  }])
+                })
             })
         })
       })

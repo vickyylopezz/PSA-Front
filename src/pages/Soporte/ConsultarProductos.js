@@ -97,6 +97,8 @@ const ConsultarProductos = () => {
           history.push({
             pathname: '/crear-ticket',
             state: {
+              readOnly: false,
+              isNewTicket: true,
               codigoProducto: params.row.versionElegida.codigoProducto,
               version: params.row.versionElegida.version
             }
@@ -142,7 +144,7 @@ const ConsultarProductos = () => {
 
   return (
     <>
-      <QuickFilteringGrid data={productos} columns={columns} />
+      <QuickFilteringGrid buscarPor="Buscar por nombre" data={productos} columns={columns} />
     </>
   )
 }
