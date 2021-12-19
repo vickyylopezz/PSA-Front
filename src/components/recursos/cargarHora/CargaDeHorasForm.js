@@ -121,12 +121,11 @@ const CargaDeHorasForm = (props) => {
     }    
     
     
-    
     return (
         <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
             <CssBaseline />
             <Typography variant="h5" align="center" component="h2" gutterBottom>
-            Cargar Tarea
+            Cargar de Hora
             </Typography>
             <Form
                 onSubmit={onSubmit}
@@ -160,6 +159,9 @@ const CargaDeHorasForm = (props) => {
                                     </Select>        
                                 </Grid>
                                 <Grid item xs={12} item style={{ marginTop: 16 }}>
+                                    <InputLabel required variant="standard" htmlFor="proyecto">
+                                        Tarea
+                                    </InputLabel>
                                     <Select
                                        required
                                        fullWidth
@@ -203,17 +205,8 @@ const CargaDeHorasForm = (props) => {
                                         label="Horas"
                                     />
                                 </Grid> 
-                                <Grid item style={{ marginTop: 32 }}>
-                                    <Button
-                                        type="button"
-                                        variant="contained"
-                                        onClick={reset}
-                                        disabled={submitting || pristine}
-                                    >
-                                        Reset
-                                    </Button>
-                                </Grid>  
-                                <Grid item style={{ marginTop: 32, marginLeft:16 }}>
+                                 
+                                <Grid container xs={12} justifyContent="flex-end" style={{ padding:10 }}>
                                     <Button
                                         variant="contained"
                                         color="primary"
