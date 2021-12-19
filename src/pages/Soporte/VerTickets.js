@@ -103,6 +103,7 @@ const VerTickets = (props) => {
   }
 
   const obtenerTickets = () => {
+    setTickets([]);
     fetch(url)
       .then(res => res.json())
       .then(
