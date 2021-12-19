@@ -72,7 +72,7 @@ const ConsultarTickets = () => {
 
   return (
     <>
-      <h3><center>ASIGNACIONES A TICKETS </center></h3>
+      <div style={{ textAlign: 'center' }}><h2>Asignaciones a Tickets</h2></div>
       <QuickFilteringGrid data={tickets} columns={columns} />
     </>
   )
