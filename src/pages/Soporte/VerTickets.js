@@ -14,7 +14,7 @@ const VerTickets = (props) => {
   const columns = [
     { field: 'id', headerName: 'ID', sortable: false, width: 50, flex: 1 },
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
-    { field: 'descripcion', headerName: 'Descripcion', sortable: false, width: 150, flex: 1 },
+    { field: 'descripcion', headerName: 'Descripción', sortable: false, width: 150, flex: 1 },
     {
       field: 'acciones', headerName: 'Acciones', sortable: false, width: 300, flex: 1,
       renderCell: (params) => {
@@ -126,7 +126,7 @@ const VerTickets = (props) => {
   }, [])
   return (
     <>
-      <h3>LiSTADO DE TICKETS - Producto {location.state.codigoProducto} (Versión {location.state.version})</h3>
+      <div style={{ textAlign: 'center' }}><h2>Listado de Tickets - Producto {location.state.codigoProducto} (Versión {location.state.version})</h2> </div>
       <ConfirmModal
         content={content(ticketABorrar?.id, ticketABorrar?.codigoProducto)}
         open={showModal}
