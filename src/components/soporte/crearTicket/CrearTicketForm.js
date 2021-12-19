@@ -52,7 +52,7 @@ const CrearIncidenciaForm = (props) => {
   const [severidades, setSeveridades] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [personaAsignada, setPersonaAsignada] = useState('');
-  const [fechaFinalizacion, setFechaFinalizacion] = useState('2014-08-18');
+  const [fechaFinalizacion, setFechaFinalizacion] = useState(new Date().toISOString().slice(0, 10).toString());
   const [estado, setEstado] = useState('');
   const [severidad, setSeveridad] = useState(0);
   const [tareas, setTareas] = useState([]);
@@ -166,12 +166,35 @@ const CrearIncidenciaForm = (props) => {
   }
 
   const tipoTicketHandler = (value) => {
-    if (!readOnly)
+    if (!readOnly && ticketId === 0)
       setEsError(value);
   }
 
   const editarTicket = () => {
-
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clienteId: cliente,
+        descripcion: descripcion,
+        empleadoId: personaAsignada,
+        estado: estado,
+        fechaCreacion: new Date().toISOString().slice(0, 10).toString(),
+        fechaFinalizacion: fechaFinalizacion.toString(),
+        severidadId: severidad,
+        tipo: esError ? "error" : "consulta",
+        titulo: titulo
+      })
+    };
+    fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`, requestOptions)
+      .then(response => response.json())
+      .then(data => ticketId = data.id)
+      .then(() => {
+        if (esError) {
+          asociarTareas(ticketId);
+        }
+        history.push('/consultar-productos');
+      })
   }
 
   const crearTicket = () => {
@@ -224,8 +247,8 @@ const CrearIncidenciaForm = (props) => {
                       value={esError ? "error" : "consulta"}
                       name="radio-buttons-group"
                     >
-                      <FormControlLabel value="consulta" control={<Radio />} label="Consulta" disabled={readOnly} onClick={() => tipoTicketHandler(false)} />
-                      <FormControlLabel value="error" control={<Radio />} label="Error" disabled={readOnly} onClick={() => tipoTicketHandler(true)} />
+                      <FormControlLabel value="consulta" control={<Radio />} label="Consulta" disabled={readOnly || ticketId !== 0} onClick={() => tipoTicketHandler(false)} />
+                      <FormControlLabel value="error" control={<Radio />} label="Error" disabled={readOnly || ticketId !== 0} onClick={() => tipoTicketHandler(true)} />
                     </RadioGroup>
                   </FormControl>
                 </Grid>
