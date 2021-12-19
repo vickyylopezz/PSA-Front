@@ -99,7 +99,7 @@ const CargaDeHorasForm = (props) => {
     }, [])
 
     const onChangeProyecto = value => { 
-        
+        setProyecto_id(value)
         fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${value}/tareas`)
         .then(res => res.json())
         .then(
@@ -165,9 +165,8 @@ const CargaDeHorasForm = (props) => {
                                         id="tags-standard"
                                         options={tareas}
                                         getOptionLabel={(option) => option.nombre}
-                                        
+                                        onChange = {(event) => setTarea_id(event.target.value)}
                                         renderInput={(params) => <TextField {...params} label="Tareas *" />}
-                                
                                     />
                                 </Grid>
                                 <LocalizationProvider item dateAdapter={AdapterDateFns}>
