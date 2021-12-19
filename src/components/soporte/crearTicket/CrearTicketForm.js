@@ -237,7 +237,7 @@ const CrearIncidenciaForm = (props) => {
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Crear Ticket - Producto {codigoProducto} (Versión {version})
+        {ticketId === 0 ? 'Crear' : 'Editar'} Ticket - Producto {codigoProducto} (Versión {version})
       </Typography>
       <Form
         onSubmit={onSubmit}
