@@ -144,6 +144,8 @@ const ConsultarProductos = () => {
 
   return (
     <>
+      
+      <div style={{ textAlign: 'center' }}><h2>Productos PSA</h2></div>
       <QuickFilteringGrid buscarPor="Buscar por nombre" data={productos} columns={columns} />
     </>
   )
