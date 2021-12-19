@@ -126,6 +126,7 @@ const CrearIncidenciaForm = (props) => {
     fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`)
       .then(res => res.json())
       .then((data) => {
+        setEsError(data.tipo === "error")
         setTitulo(data.titulo);
         setDescripcion(data.descripcion);
         setEstado(data.estado);
@@ -133,6 +134,14 @@ const CrearIncidenciaForm = (props) => {
         setFechaFinalizacion(formatDate(data.fechaFinalizacion));
         setCliente(data.clienteId);
         setPersonaAsignada(data.empleadoId);
+
+        if (data.tipo === "error") {
+          fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}/tarea`)
+            .then(res => res.json())
+            .then((data) => {
+              setTareasAsignadas(data);
+            })
+        }
       })
   }
 
@@ -393,31 +402,34 @@ const CrearIncidenciaForm = (props) => {
                 </Grid>
                 {esError &&
                   <>
-                    <Grid item xs={5} item style={{ marginTop: 32 }}>
-                      <InputLabel required variant="standard" htmlFor="proyecto">
-                        Proyecto
-                      </InputLabel>
-                      <Select
-                        required
-                        fullWidth
-                        name="proyecto"
-                        labelId="demo-simple-select-label"
-                        id="proyecto"
-                        label="Proyecto"
-                        disabled={readOnly}
-                        formControlProps={{ fullWidth: true }}
-                        onChange={(event, value) => onChangeProyecto(value.props.value)}
-                      >
-                        {
-                          proyectos.map((s) => {
-                            return (
-                              <MenuItem value={s.id}>{s.nombre}</MenuItem>
-                            )
-                          })
-                        }
-                      </Select>
-                    </Grid>
-                    <Grid item xs={2} />
+                    {!readOnly &&
+                      <>
+                        <Grid item xs={5} item style={{ marginTop: 32 }}>
+                          <InputLabel required variant="standard" htmlFor="proyecto">
+                            Proyecto
+                          </InputLabel>
+                          <Select
+                            required
+                            fullWidth
+                            name="proyecto"
+                            labelId="demo-simple-select-label"
+                            id="proyecto"
+                            label="Proyecto"
+                            formControlProps={{ fullWidth: true }}
+                            onChange={(event, value) => onChangeProyecto(value.props.value)}
+                          >
+                            {
+                              proyectos.map((s) => {
+                                return (
+                                  <MenuItem value={s.id}>{s.nombre}</MenuItem>
+                                )
+                              })
+                            }
+                          </Select>
+                        </Grid>
+                        <Grid item xs={2} />
+                      </>
+                    }
                     <Grid item xs={5} item style={{ marginTop: 16 }}>
                       <Autocomplete
                         onChange={(event, value) => asociarTareaHandler(value)}
@@ -425,6 +437,7 @@ const CrearIncidenciaForm = (props) => {
                         disabled={readOnly}
                         id="tags-standard"
                         options={tareas}
+                        value={tareasAsignadas}
                         getOptionLabel={(option) => option.nombre}
                         renderInput={(params) => (
                           <TextField
