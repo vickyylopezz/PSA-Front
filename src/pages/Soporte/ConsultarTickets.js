@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import QuickFilteringGrid from '../../components/common/DataGrid';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from '@mui/material/IconButton';
+
 
 const ConsultarTickets = () => {
 
@@ -28,15 +31,16 @@ const ConsultarTickets = () => {
         };
 
         return (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="auto"
-              onClick={onVerTicketsHandler}
-            >
-              Ver
-            </Button>
+          <>   
+            <IconButton 
+            variant="contained"
+            color="primary" 
+            onClick={onVerTicketsHandler} 
+            size="small"
+            style={{ marginLeft: 16 }}
+            aria-label="delete">
+               <VisibilityIcon />
+             </IconButton>
           </>
         )
       }
@@ -73,7 +77,7 @@ const ConsultarTickets = () => {
   return (
     <>
       <div style={{ textAlign: 'center' }}><h2>Asignaciones a Tickets</h2></div>
-      <QuickFilteringGrid data={tickets} columns={columns} />
+      <QuickFilteringGrid data={tickets} columns={columns} buscarPor ='Buscar persona asignada'/>
     </>
   )
 }

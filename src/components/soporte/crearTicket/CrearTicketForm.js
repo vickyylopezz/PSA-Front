@@ -233,11 +233,22 @@ const CrearIncidenciaForm = (props) => {
       })
   }
 
+  const limpiarCampos= () => {
+    setTitulo('');
+    setDescripcion('');
+    setEstado('');
+    setSeveridad('');
+    setFechaFinalizacion(new Date().toISOString().slice(0, 10).toString());
+    setCliente('');
+    setPersonaAsignada('');
+    setTareasAsignadas([]);
+  }
+
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        Crear Ticket - Producto {codigoProducto} (Versión {version})
+        {ticketId === 0 ? 'Crear' : 'Editar'} Ticket - Producto {codigoProducto} (Versión {version})
       </Typography>
       <Form
         onSubmit={onSubmit}
@@ -457,7 +468,7 @@ const CrearIncidenciaForm = (props) => {
                       <Button
                         type="button"
                         variant="contained"
-                        onClick={reset}
+                        onClick={limpiarCampos}
                       >
                         Reset
                       </Button>
@@ -477,6 +488,11 @@ const CrearIncidenciaForm = (props) => {
                 }
               </Grid>
             </Paper>
+            <Button variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginTop: 32 }}
+                onClick={() => history.goBack()}>Volver</Button>
           </form>
         )
         }
