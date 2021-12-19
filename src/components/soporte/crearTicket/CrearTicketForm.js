@@ -233,6 +233,17 @@ const CrearIncidenciaForm = (props) => {
       })
   }
 
+  const limpiarCampos= () => {
+    setTitulo('');
+    setDescripcion('');
+    setEstado('');
+    setSeveridad('');
+    setFechaFinalizacion(new Date().toISOString().slice(0, 10).toString());
+    setCliente('');
+    setPersonaAsignada('');
+    setTareasAsignadas([]);
+  }
+
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
@@ -457,7 +468,7 @@ const CrearIncidenciaForm = (props) => {
                       <Button
                         type="button"
                         variant="contained"
-                        onClick={reset}
+                        onClick={limpiarCampos}
                       >
                         Reset
                       </Button>
