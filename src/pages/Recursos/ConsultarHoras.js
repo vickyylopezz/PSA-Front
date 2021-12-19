@@ -15,12 +15,12 @@ const ConsultarHoras = () => {
   const [horaABorrar, setHoraABorrar] = useState(null);
   const [horas_persona, setHorasPersona] = useState(null);
   const [nombre_persona, setNombrePersona] = useState(null);
-  const [isBusy, setBusy] = useState(true);
 
   let history = useHistory();
   const location = useLocation();
   
   const obtenerHoras = () => {
+    setHoras([]);
       fetch(url)
       .then(res => res.json())
         .then((data) => {
@@ -48,7 +48,7 @@ const ConsultarHoras = () => {
           .then((data) =>{
             setHorasPersona(data)
         })
-        fetch(`https://api-recursos.herokuapp.com/empelados/ObtenerEmpleados/2`)
+        fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados?legajo=2`)
           .then(res => res.json())
           .then((data) =>{
             setNombrePersona(data.Nombre + " " + data.Apellido)
@@ -59,36 +59,7 @@ const ConsultarHoras = () => {
   
   const url = "https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2"
   useEffect(() => {
-    
-    //async function fetchData() {
       obtenerHoras();
-    //   setBusy(true);
-    //   setHoras([]);
-    // fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
-    //   .then(res => res.json())
-    //   .then((data) => {
-    //     data.map(d => {
-    //       fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
-    //         .then(res => res.json())
-    //         .then((res) => {
-    //           fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}/tareas/${d.tarea_id}`)
-    //           .then((aux)=> aux.json())
-    //           .then((aux) =>{
-    //             setHoras(prev => [...prev, {
-    //               id:d.carga_id,
-    //               proyecto: res.nombre,
-    //               tarea: aux.nombre,
-    //               horas: d.horas,
-    //               fecha: d.fecha            
-    //             }])
-    //           })
-              
-    //         })
-    //     })
-    //   })
-    //   setBusy(false);
-    // }
-    // fetchData();
   }, [])
 
 
@@ -125,12 +96,12 @@ const ConsultarHoras = () => {
 
          return (
            <>
-              <IconButton color="primary" aria-label="delete">
+              <IconButton color="error" aria-label="delete">
                <DeleteIcon 
                onClick={() => onEliminarHoraHandler(params.row.id, params.row.proyecto, params.row.tarea)} 
                />
              </IconButton> 
-              <IconButton color="primary"  aria-label="edit">
+              <IconButton color="warning"  aria-label="edit">
                <EditIcon 
                onClick={() => onEditarHoraHandler()}
                />
@@ -179,11 +150,9 @@ const ConsultarHoras = () => {
         <div style={{ marginTop: 50 }}>
           
         </div>
-        {/* {isBusy ? (
-                <h1>Cargando</h1>
-              ) : ( */}
-                <QuickFilteringGrid data={horas} columns={columns} />
-                {/* )} */}
+        
+            <QuickFilteringGrid data={horas} columns={columns} />
+                
       </div>
 
     </>
