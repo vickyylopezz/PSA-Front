@@ -4,6 +4,10 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useHistory } from "react-router-dom";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from '@mui/material/IconButton';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 const ConsultarProductos = () => {
 
@@ -107,25 +111,29 @@ const ConsultarProductos = () => {
 
         return (
           <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="auto"
-              onClick={onVerTicketsHandler}
-              disabled={params.row.versionElegida == null}
-            >
-              Ver tickets
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="auto"
-              style={{ marginLeft: 16 }}
-              onClick={onCrearTicketHandler}
-              disabled={params.row.versionElegida == null}
-            >
-              Crear un nuevo ticket
-            </Button>
+    
+            <IconButton 
+            variant="contained"
+            color="primary" 
+            onClick={onVerTicketsHandler} 
+            disabled={params.row.versionElegida == null}
+            aria-label="delete">
+               <VisibilityIcon />
+             </IconButton>
+
+          
+            <IconButton 
+            variant="contained"
+            color="success"
+            style={{ marginLeft: 16 }}
+            onClick={onCrearTicketHandler} 
+            disabled={params.row.versionElegida == null}
+            aria-label="delete">
+               <AddCircleIcon/>
+             </IconButton>
+
+          
+
           </>
         )
       }

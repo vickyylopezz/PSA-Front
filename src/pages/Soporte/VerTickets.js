@@ -3,6 +3,11 @@ import QuickFilteringGrid from '../../components/common/DataGrid';
 import Button from '@mui/material/Button';
 import { useHistory, useLocation } from "react-router-dom";
 import ConfirmModal from '../../components/common/ConfirmModal';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 
 const VerTickets = (props) => {
   const [tickets, setTickets] = useState([]);
@@ -53,32 +58,39 @@ const VerTickets = (props) => {
 
         return (
           <>
-            <Button
-              variant="contained"
-              color="error"
-              size="small"
-              onClick={() => onEliminarTicketHandler(params.row.id, location.state.codigoProducto, location.state.version)}
+            
+            <IconButton 
+            variant="contained"
+            color="error" 
+            size="small"
             >
-              Eliminar
-            </Button>
-            <Button
-              variant="contained"
-              color="warning"
-              size="small"
-              style={{ marginLeft: 16 }}
-              onClick={onEditarTicketHandler}
-            >
-              Editar
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: 16 }}
-              onClick={onVerTicketsHandler}
-            >
-              Ver
-            </Button>
+               <DeleteIcon 
+               onClick={() => onEliminarTicketHandler(params.row.id, location.state.codigoProducto, location.state.version)} 
+               />
+             </IconButton>
+
+            <IconButton 
+            variant="contained"
+            color="warning" 
+            size="small"
+            style={{ marginLeft: 16 }} 
+            aria-label="edit">
+               <EditIcon 
+               onClick={() => onEditarTicketHandler()}
+               />
+             </IconButton>
+
+            
+            <IconButton 
+            variant="contained"
+            color="primary" 
+            onClick={onVerTicketsHandler} 
+            size="small"
+            style={{ marginLeft: 16 }}
+            aria-label="delete">
+               <VisibilityIcon />
+             </IconButton>
+
           </>
         )
       }
