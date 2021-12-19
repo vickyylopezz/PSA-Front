@@ -477,6 +477,11 @@ const CrearIncidenciaForm = (props) => {
                 }
               </Grid>
             </Paper>
+            <Button variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginTop: 32 }}
+                onClick={() => history.goBack()}>Volver</Button>
           </form>
         )
         }

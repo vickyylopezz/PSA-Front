@@ -10,13 +10,6 @@ const CrearTicket = () => {
     <>
       <div style={{ padding: 16, margin: 'auto' }}>
         <CrearIncidenciaForm />
-        <div style={{ marginTop: 16 }}>
-          <Button variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: 217 }}
-            onClick={() => history.push('/consultar-productos')}>Volver</Button>
-        </div>
       </div>
     </>
   )
