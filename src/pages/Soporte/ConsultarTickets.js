@@ -31,8 +31,7 @@ const ConsultarTickets = () => {
         };
 
         return (
-          <>
-            
+          <>   
             <IconButton 
             variant="contained"
             color="primary" 
@@ -42,8 +41,6 @@ const ConsultarTickets = () => {
             aria-label="delete">
                <VisibilityIcon />
              </IconButton>
-
-
           </>
         )
       }
@@ -80,7 +77,7 @@ const ConsultarTickets = () => {
   return (
     <>
       <div style={{ textAlign: 'center' }}><h2>Asignaciones a Tickets</h2></div>
-      <QuickFilteringGrid data={tickets} columns={columns} buscarPor ='Buscar por Persona asignada'/>
+      <QuickFilteringGrid data={tickets} columns={columns} buscarPor ='Buscar persona asignada'/>
     </>
   )
 }
