@@ -23,21 +23,6 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import { useLocation, useHistory } from "react-router-dom";
 
-
-const validate = values => {
-  const errors = {};
-  if (!values.firstName) {
-    errors.firstName = 'Required';
-  }
-  if (!values.lastName) {
-    errors.lastName = 'Required';
-  }
-  if (!values.email) {
-    errors.email = 'Required';
-  }
-  return errors;
-};
-
 const onSubmit = async values => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   await sleep(300);
@@ -57,10 +42,10 @@ const diaHoy = () => {
 const CrearTareaForm = (props) => {
   const location = useLocation();
   const [personasAsignadas, setPersonasAsignadas] = useState([]);
-  const [personaAsignada, setPersonaAsignada] = useState([]);
-  const [descripcion, setDescripcion] = useState(location.state.descripcionTarea);
-  const [estado, setEstado] = useState(location.state.estadoTarea);
-  const [nombre, setNombre] = useState(location.state.nombreTarea);
+  const [personaAsignada, setPersonaAsignada] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [estado, setEstado] = useState('');
+  const [nombre, setNombre] = useState('');
 
   const [value, setValue] = React.useState(diaHoy);
   let history = useHistory();
@@ -70,7 +55,7 @@ const CrearTareaForm = (props) => {
   };
 
   useEffect(() => {
-    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados") //Cambiar por empleados
+    fetch("https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados") 
       .then(res => res.json())
       .then(
         (data) => {
@@ -115,7 +100,6 @@ const CrearTareaForm = (props) => {
       <Form
         onSubmit={onSubmit}
         initialValues={{ employed: true, stooge: 'larry' }}
-        validate={validate}
         render={({ handleSubmit, reset, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Paper style={{ padding: 16 }}>
@@ -160,7 +144,7 @@ const CrearTareaForm = (props) => {
                   </NativeSelect>
                 </Grid>
                 <Grid item xs={12} item style={{ marginTop: 16 }}>
-                <InputLabel shrink htmlFor="uncontrolled-native" >
+                <InputLabel required variant="standard" htmlFor="tarea" >
                     Persona Asignada
                   </InputLabel>
                   <Select
@@ -171,7 +155,6 @@ const CrearTareaForm = (props) => {
                     id="personaAsignada"
                     label="Persona Asignada"
                     formControlProps={{ fullWidth: true }}
-                    defaultValue={location.state.legajoPersona}
                     onChange={(event, value) => setPersonaAsignada(value.props.value)}
                   >
                     {
@@ -189,6 +172,7 @@ const CrearTareaForm = (props) => {
                       variant="contained"
                       color="primary"
                       type="submit"
+                      disabled={!nombre || !descripcion || !personaAsignada}
                       onClick={ () => crearTarea()
                       }
                     >

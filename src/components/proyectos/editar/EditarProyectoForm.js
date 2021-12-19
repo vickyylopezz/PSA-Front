@@ -28,14 +28,14 @@ import Stack from '@mui/material/Stack';
 
 const validate = values => {
   const errors = {};
-  if (!values.firstName) {
-    errors.firstName = 'Required';
+  if (values.nombre == "") {
+    errors.nombre = 'Required';
   }
-  if (!values.lastName) {
-    errors.lastName = 'Required';
+  if (values.descripcion == "") {
+    errors.descripcion = 'Required';
   }
-  if (!values.email) {
-    errors.email = 'Required';
+  if (values.liderProyecto == "") {
+    errors.liderProyecto = 'Required';
   }
   return errors;
 };
@@ -67,7 +67,7 @@ const EditarProyectoForm = (props) => {
   const [estado, setEstado] = useState(location.state.estado);
   const [id, setId] = useState('');
   let history = useHistory();
-
+  let submiteable = true;
   const handleChange = (newValue) => {
      setValue(newValue);
   };
@@ -118,10 +118,10 @@ const EditarProyectoForm = (props) => {
       </Typography>
       <Form
         onSubmit={onSubmit}
-        initialValues={{ employed: true, stooge: 'larry' }}
+        initialValues={{ nombre, descripcion }}
         validate={validate}
         render={({ handleSubmit, reset, submitting, pristine, values }) => (
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} >
             <Paper style={{ padding: 16 }}>
               <Grid container alignItems="flex-start" spacing={2}>
                 <Grid item xs={12}>
@@ -133,9 +133,8 @@ const EditarProyectoForm = (props) => {
                     type="text"
                     label="Nombre del proyecto"
                     onChange={(event) => setNombre(event.target.value)}
-
                   />
-                </Grid>
+                </Grid>                
                 <Grid item xs={12} style={{ marginTop: 16 }}>
                   <TextField
                     defaultValue={location.state.descripcion}
@@ -205,24 +204,13 @@ const EditarProyectoForm = (props) => {
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Grid>
-                    {/* <Grid item xs={6} /> */}
                 </LocalizationProvider>
-                {/* <Grid item style={{ marginTop: 32 }}>
-                  <Button
-                    type="button"
-                    variant="contained"
-                    onClick={reset}
-                    disabled={submitting || pristine}
-                  >
-                    Reset
-                  </Button>
-                </Grid> */}
                     <Grid container xs={12} justifyContent="flex-end" style={{ padding:10 }}>
                     <Button
                         variant="contained"
                         color="primary"
                         type="submit"
-                        disabled={submitting}
+                        disabled={!nombre || !descripcion || !lider}
                         onClick={() => editarProyecto()}
                     >
                         Submit
