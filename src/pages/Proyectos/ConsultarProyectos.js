@@ -22,11 +22,11 @@ const ConsultarProyectos = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Codigo", width: 110 },
+    { field: "id", headerName: "Código", width: 110 },
     { field: "nombre", headerName: "Nombre", sortable: false, width: 150 },
     {
       field: "liderDeProyecto",
-      headerName: "Lider",
+      headerName: "Líder",
       sortable: false,
       width: 150,
       renderCell: (params) => {
@@ -58,7 +58,7 @@ const ConsultarProyectos = () => {
     },
     {
       field: "acciones",
-      headerName: "",
+      headerName: "Acciones",
       sortable: false,
       width: 60,
       renderCell: (params) => {

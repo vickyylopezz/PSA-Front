@@ -62,7 +62,7 @@ const ConsultarProductos = () => {
     // {field:'codigoProducto',headerName:'Codigo producto', width:110},
     { field: 'nombre', headerName: 'Nombre', sortable: false, flex: 1 },
     {
-      field: 'version', headerName: 'Version', sortable: false, flex: 1,
+      field: 'version', headerName: 'Versión', sortable: false, flex: 1,
       renderCell: (params) => {
         return (
           <Select
