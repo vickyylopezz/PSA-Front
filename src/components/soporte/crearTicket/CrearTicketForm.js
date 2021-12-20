@@ -233,7 +233,7 @@ const CrearIncidenciaForm = (props) => {
       })
   }
 
-  const limpiarCampos= () => {
+  const limpiarCampos = () => {
     setTitulo('');
     setDescripcion('');
     setEstado('');
@@ -244,11 +244,30 @@ const CrearIncidenciaForm = (props) => {
     setTareasAsignadas([]);
   }
 
+  const mostrarTitulo = () => {
+    if (!readOnly) {
+      if (ticketId === 0) {
+        return (
+          `Crear Ticket - Producto ${codigoProducto} (Versión ${version})`
+        )
+      }
+      else {
+        return (
+          `Editar Ticket - Producto ${codigoProducto} (Versión ${version})`
+        )
+      }
+    }
+    else
+      return (
+        <></>
+      )
+  }
+
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
       <Typography variant="h5" align="center" component="h2" gutterBottom>
-        {ticketId === 0 ? 'Crear' : 'Editar'} Ticket - Producto {codigoProducto} (Versión {version})
+        {mostrarTitulo()}
       </Typography>
       <Form
         onSubmit={onSubmit}
@@ -489,10 +508,10 @@ const CrearIncidenciaForm = (props) => {
               </Grid>
             </Paper>
             <Button variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginTop: 32 }}
-                onClick={() => history.goBack()}>Volver</Button>
+              color="primary"
+              size="small"
+              style={{ marginTop: 32 }}
+              onClick={() => history.goBack()}>Volver</Button>
           </form>
         )
         }
