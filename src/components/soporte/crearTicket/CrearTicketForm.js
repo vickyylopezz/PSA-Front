@@ -123,7 +123,7 @@ const CrearIncidenciaForm = (props) => {
   }
 
   const obtenerTicket = () => {
-    fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`)
+    fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`)
       .then(res => res.json())
       .then((data) => {
         setEsError(data.tipo === "error")
@@ -136,7 +136,7 @@ const CrearIncidenciaForm = (props) => {
         setPersonaAsignada(data.empleadoId);
 
         if (data.tipo === "error") {
-          fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}/tarea`)
+          fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}/tarea`)
             .then(res => res.json())
             .then((data) => {
               setTareasAsignadas(data);
@@ -195,7 +195,7 @@ const CrearIncidenciaForm = (props) => {
         titulo: titulo
       })
     };
-    fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`, requestOptions)
+    fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${codigoProducto}-${version}/ticket/${ticketId}`, requestOptions)
       .then(response => response.json())
       .then(() => {
         if (esError) {

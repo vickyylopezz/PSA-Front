@@ -58,7 +58,7 @@ const ConsultarTickets = () => {
             .then(res => res.json())
             .then((res) => {
               empleado = res.Nombre + ' ' + res.Apellido;
-              fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
+              fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
                 .then(prod => prod.json())
                 .then((prod) => {
                   setTickets(prev => [...prev, {
