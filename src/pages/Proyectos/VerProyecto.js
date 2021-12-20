@@ -43,20 +43,20 @@ const VerProyecto = (props) => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Codigo", width: 110 },
-    { field: "nombre", headerName: "Nombre", sortable: false, width: 150 },
+    { field: "id", headerName: "Codigo", width: 138 },
+    { field: "nombre", headerName: "Nombre", sortable: false, width: 178 },
     {
       field: "descripcion",
       headerName: "Descripción",
       sortable: false,
-      width: 200,
+      width: 228,
     },
-    { field: "estado", headerName: "Estado", sortable: false, width: 150 },
+    { field: "estado", headerName: "Estado", sortable: false, width: 178 },
     {
       field: "legajoPersonaAsignada",
       headerName: "Persona asignada",
       sortable: false,
-      width: 150,
+      width: 178,
       renderCell: (params) => {
         return personasAsignadas.map((s) => {
           if (s.legajo == params.row.legajoPersonaAsignada) {
@@ -72,26 +72,26 @@ const VerProyecto = (props) => {
       },
     },
 
-    {
-      field: "ticket",
-      headerName: "Ticket",
-      sortable: false,
-      width: 170,
-      renderCell: (params) => {
-        return (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: 16 }}
-            >
-              Ver Ticket
-            </Button>
-          </>
-        );
-      },
-    },
+    // {
+    //   field: "ticket",
+    //   headerName: "Ticket",
+    //   sortable: false,
+    //   width: 170,
+    //   renderCell: (params) => {
+    //     return (
+    //       <>
+    //         <Button
+    //           variant="contained"
+    //           color="primary"
+    //           size="small"
+    //           style={{ marginLeft: 16 }}
+    //         >
+    //           Ver Ticket
+    //         </Button>
+    //       </>
+    //     );
+    //   },
+    // },
 
     {
       field: "acciones",
@@ -147,10 +147,11 @@ const VerProyecto = (props) => {
     fetch(
       `https://modulo-proyectos-squad7.herokuapp.com/proyectos/${proyectoABorrar.id}`,
       { method: "DELETE" }
-    )
-    fetch(`https://api-recursos.herokuapp.com/recursos/EliminarHorasPorProyecto/${proyectoABorrar.id}`,
-    { method: "DELETE" })
-    .then(() => history.push("/consultar-proyectos"));
+    );
+    fetch(
+      `https://api-recursos.herokuapp.com/recursos/EliminarHorasPorProyecto/${proyectoABorrar.id}`,
+      { method: "DELETE" }
+    ).then(() => history.push("/consultar-proyectos"));
   };
 
   const onEliminarProyectoHandler = (id) => {
@@ -225,13 +226,10 @@ const VerProyecto = (props) => {
                         display: "grid",
                         gridAutoColumns: "1fr",
                         gap: 1,
-                        textAlign: "left"
+                        textAlign: "left",
                       }}
                     >
-                      
-                      <Box sx={{ gridRow: "1"}} >
-                        Lider:
-                      </Box>
+                      <Box sx={{ gridRow: "1" }}>Lider:</Box>
                       <Box sx={{ gridRow: "2" }}>
                         {lider.Nombre} {lider.Apellido}
                       </Box>
@@ -249,9 +247,7 @@ const VerProyecto = (props) => {
                         gap: 1,
                       }}
                     >
-                      <Box sx={{ gridRow: "1" }}>
-                        Estado:
-                      </Box>
+                      <Box sx={{ gridRow: "1" }}>Estado:</Box>
                       <Box sx={{ gridRow: "2", paddingTop: 0.5 }}>
                         {location.state.estado}
                       </Box>
@@ -269,9 +265,7 @@ const VerProyecto = (props) => {
                         gap: 0.5,
                       }}
                     >
-                      <Box sx={{ gridRow: "1" }}>
-                        Fecha de Creación:
-                      </Box>
+                      <Box sx={{ gridRow: "1" }}>Fecha de Creación:</Box>
                       <Box sx={{ gridRow: "2", paddingTop: 0.5 }}>
                         {location.state.fechaCreacion}
                       </Box>
@@ -365,19 +359,39 @@ const VerProyecto = (props) => {
         setOpen={setShowModal}
         onConfirm={onEliminarProyectoModalHandler}
       />
-        <Stack spacing={-7}>
+      <Stack spacing={-9}>
         <QuickFilteringGrid data={tareas} columns={columns} />
-        <Button
-        
-          variant="contained"
-          color="primary"
-          size="small"
-          style={{ marginLeft: 16, width:11 }}
-          onClick={() => history.push("/consultar-proyectos")}
+        <Box
+          sx={{
+            display: "grid",
+            gridAutoColumns: "1fr",
+            gap: 0.5,
+          }}
         >
-          Volver
-        </Button>
-        </Stack>
+          <Box sx={{ gridRow: "1", gridColumn: "1" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16, width: "auto" }}
+              onClick={() => history.push("/consultar-proyectos")}
+            >
+              Volver
+            </Button>
+          </Box>
+          <Box sx={{ gridRow: "1", gridColumn: "6" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16, width: "auto" }}
+              onClick={() => history.push("/consultar-tickets")}
+            >
+              Consultar tickets
+            </Button>
+          </Box>
+        </Box>
+      </Stack>
     </>
   );
 };
