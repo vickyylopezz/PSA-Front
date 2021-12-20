@@ -19,36 +19,28 @@ import ConfirmModal from "../../components/common/ConfirmModal";
 
 const onSubmit = async (values) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  await sleep(600);
-  window.alert(JSON.stringify(values, 0, 2));
+  await sleep(1000);
 };
 
 const VerTarea = (props) => {
   const location = useLocation();
   const [personaAsignada, setPersonaAsignada] = useState("");
   const [personasAsignadas, setPersonasAsignadas] = useState([]);
-  const [open, setOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tareaABorrar, setTareaABorrar] = useState(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
   let history = useHistory();
-
-  const handlePopoverOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const openPop = Boolean(anchorEl);
 
   const onEliminarTareaModalHandler = () => {
     fetch(
       `https://modulo-proyectos-squad7.herokuapp.com/proyectos/${tareaABorrar.codigoProyecto}/tareas/${tareaABorrar.id}`,
       { method: "DELETE" }
-    ).then(() =>
+    )
+    fetch(
+      `https://api-recursos.herokuapp.com/recursos/EliminarHorasPorTarea/${tareaABorrar.id}?proyecto_id=${tareaABorrar.codigoProyecto}`,
+      { method: "DELETE" }
+    )
+    .then(() =>
       history.push({
         pathname: "/ver-proyecto",
         state: {
@@ -104,7 +96,6 @@ const VerTarea = (props) => {
       </Typography>
       <Form
         onSubmit={onSubmit}
-        initialValues={{ employed: true, stooge: "larry" }}
         render={({ handleSubmit, reset, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Paper style={{ padding: 16 }}>
@@ -113,7 +104,7 @@ const VerTarea = (props) => {
                   <TextField
                     defaultValue={location.state.nombreTarea}
                     InputProps={{
-                      readOnly: true,
+                      disabled: true,
                     }}
                     fullWidth
                     required
@@ -126,7 +117,7 @@ const VerTarea = (props) => {
                   <TextField
                     defaultValue={location.state.descripcionTarea}
                     InputProps={{
-                      readOnly: true,
+                      disabled: true,
                     }}
                     name="descripcion"
                     fullWidth
@@ -142,7 +133,7 @@ const VerTarea = (props) => {
                   </InputLabel>
                   <Select
                     required
-                    readOnly="true"
+                    disabled
                     fullWidth
                     name="estado"
                     labelId="demo-simple-select-label"
@@ -161,7 +152,7 @@ const VerTarea = (props) => {
                   </InputLabel>
                   <Select
                     required
-                    readOnly="true"
+                    disabled
                     fullWidth
                     name="personaAsignada"
                     labelId="demo-simple-select-label"
@@ -202,16 +193,11 @@ const VerTarea = (props) => {
                       }
                       grid
                       color="primary"
-                      id="eliminar"
                       disabled={
                         location.state.estadoTarea == "FINALIZADA" ||
                         location.state.estado == "FINALIZADO"
                       }
                       style={{ backgroundColor: "#D32F2F" }}
-                      aria-owns={openPop ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
-                      onMouseEnter={handlePopoverOpen}
-                      onMouseLeave={handlePopoverClose}
                     >
                       Eliminar
                     </Button>

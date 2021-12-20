@@ -147,7 +147,10 @@ const VerProyecto = (props) => {
     fetch(
       `https://modulo-proyectos-squad7.herokuapp.com/proyectos/${proyectoABorrar.id}`,
       { method: "DELETE" }
-    ).then(() => history.push("/consultar-proyectos"));
+    )
+    fetch(`https://api-recursos.herokuapp.com/recursos/EliminarHorasPorProyecto/${proyectoABorrar.id}`,
+    { method: "DELETE" })
+    .then(() => history.push("/consultar-proyectos"));
   };
 
   const onEliminarProyectoHandler = (id) => {
@@ -362,16 +365,19 @@ const VerProyecto = (props) => {
         setOpen={setShowModal}
         onConfirm={onEliminarProyectoModalHandler}
       />
-      <QuickFilteringGrid data={tareas} columns={columns} />
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        style={{ marginLeft: 16 }}
-        onClick={() => history.push("/consultar-proyectos")}
-      >
-        Volver
-      </Button>
+        <Stack spacing={-7}>
+        <QuickFilteringGrid data={tareas} columns={columns} />
+        <Button
+        
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ marginLeft: 16, width:11 }}
+          onClick={() => history.push("/consultar-proyectos")}
+        >
+          Volver
+        </Button>
+        </Stack>
     </>
   );
 };
