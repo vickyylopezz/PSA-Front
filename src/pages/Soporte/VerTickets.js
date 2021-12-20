@@ -109,7 +109,7 @@ const VerTickets = (props) => {
       .then(
         (data) => {
           data.map(d => {
-            fetch(`http://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
+            fetch(`https://aninfo-psa-soporte.herokuapp.com/producto/${d.productoId}`)
             .then(prod => prod.json())
             .then((prod) => {
               setTickets(prev => [...prev, {
