@@ -12,42 +12,54 @@ const ConsultarHoras = () => {
   const [proyectos, setProyectos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [horaElegida, setHoraElegida] = useState();
-  const [horaABorrra, setHoraABorrar] = useState(null);
-  const [isBusy, setBusy] = useState(true)
+  const [horaABorrar, setHoraABorrar] = useState(null);
+  const [horas_persona, setHorasPersona] = useState(null);
+  const [nombre_persona, setNombrePersona] = useState(null);
 
   let history = useHistory();
   const location = useLocation();
-
-  useEffect( async () => {
-    
-    async function fetchData() {
-      setBusy(true);
-      setHoras([]);
-    fetch("https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2")
+  
+  const obtenerHoras = () => {
+    setHoras([]);
+      fetch(url)
       .then(res => res.json())
-      .then((data) => {
-        data.map(d => {
-          fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
-            .then(res => res.json())
-            .then((res) => {
-              fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}/tareas/${d.tarea_id}`)
-              .then((aux)=> aux.json())
-              .then((aux) =>{
-                setHoras(prev => [...prev, {
-                  id:d.carga_id,
-                  proyecto: res.nombre,
-                  tarea: aux.nombre,
-                  horas: d.horas,
-                  fecha: d.fecha            
-                }])
+        .then((data) => {
+          data.map(d => {
+            fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}`)
+              .then(res => res.json())
+              .then((res) => {
+                fetch(`https://modulo-proyectos-squad7.herokuapp.com/proyectos/${d.proyecto_id}/tareas/${d.tarea_id}`)
+                .then((aux)=> aux.json())
+                .then((aux) =>{
+                  setHoras(prev => [...prev, {
+                    id:d.carga_id,
+                    proyecto: res.nombre,
+                    tarea: aux.nombre,
+                    horas: d.horas,
+                    fecha: d.fecha            
+                  }])
+                })
+                
               })
-              
-            })
+          })
         })
-      })
-      setBusy(false);
-    }
-    fetchData();
+        fetch(`https://api-recursos.herokuapp.com/recursos/ObtenerHorasEmpleado/2`)
+          .then(res => res.json())
+          .then((data) =>{
+            setHorasPersona(data)
+        })
+        fetch(`https://api-recursos.herokuapp.com/empleados/ObtenerEmpleados?legajo=2`)
+          .then(res => res.json())
+          .then((data) =>{
+            setNombrePersona(data.Nombre + " " + data.Apellido)
+        })
+        
+              
+  }
+  
+  const url = "https://api-recursos.herokuapp.com/recursos/ObtenerCargas/2"
+  useEffect(() => {
+      obtenerHoras();
   }, [])
 
 
@@ -57,7 +69,7 @@ const ConsultarHoras = () => {
     { field: 'tarea', headerName: 'Tarea', sortable: false, width: 180},
     { field: 'horas', headerName: 'Horas', sortable: false, width: 150 },
     { field: 'fecha', headerName: 'Fecha', sortable: false, width: 200},
-    {field: 'acciones', headerName: 'operaciones', sortable: false, width: 150,
+    {field: 'acciones', headerName: 'Acciones', sortable: false, width: 150,
       renderCell: (params) => {
           const onEditarHoraHandler = (event) => {
             setHoraElegida(params.row.horaElegida) 
@@ -73,21 +85,23 @@ const ConsultarHoras = () => {
             });
          };
 
-         const onEliminarHoraHandler = (id) => {
+         const onEliminarHoraHandler = (id, proyecto, tarea) => {
             setShowModal(true);
             setHoraABorrar({
               id: id,
+              proyecto: proyecto,
+              tarea: tarea
             })
          }
 
          return (
            <>
-              <IconButton color="primary" aria-label="delete">
+              <IconButton color="error" aria-label="delete">
                <DeleteIcon 
-               onClick={() => onEliminarHoraHandler(params.row.id)} 
+               onClick={() => onEliminarHoraHandler(params.row.id, params.row.proyecto, params.row.tarea)} 
                />
              </IconButton> 
-              <IconButton color="primary"  aria-label="edit">
+              <IconButton color="warning"  aria-label="edit">
                <EditIcon 
                onClick={() => onEditarHoraHandler()}
                />
@@ -97,9 +111,30 @@ const ConsultarHoras = () => {
       }
     }
   ]
+  const onEliminarTicketModalHandler = () => {
+    fetch(`https://api-recursos.herokuapp.com/recursos/EliminarHoras/${horaABorrar.id}`, { method: 'DELETE' })
+      .then(() => obtenerHoras());
+  }
+  const content = (codigoProyecto, codigoTarea) => {
+    return (
+      <>
+        <p style={{ textAlign: 'center' }} >¿Desea eliminar la carga de horas asociado al Proyecto {codigoProyecto} y tarea {codigoTarea}? </p>
+        <p><center> <strong> Esta acción no será reversible </strong></center></p>
+      </>
+    )
+  }
   return (
     <>
-      <div style={{ textAlign: 'center' }}><h2>Carga Horas</h2></div>
+      <div style={{  textAlign: 'center' }}><h2>Horas trabajadas: {nombre_persona}</h2></div>
+      <div style={{ textAlign: 'right' }}><h2>Horas totales: {horas_persona}</h2></div>
+      <ConfirmModal
+        content={content(horaABorrar?.proyecto, horaABorrar?.tarea)}
+        open={showModal}
+        textoConfirmar="Eliminar"
+        textoCancelar="Cancelar"
+        setOpen={setShowModal}
+        onConfirm={onEliminarTicketModalHandler}
+      />
       <div style={{ padding: 16, margin: 'auto' }}>
         <div style={{ float: 'right' }}>
           <Button variant="contained"
@@ -115,11 +150,9 @@ const ConsultarHoras = () => {
         <div style={{ marginTop: 50 }}>
           
         </div>
-        {isBusy ? (
-                <h1>Cargando</h1>
-              ) : (
-                <QuickFilteringGrid data={horas} columns={columns} />
-                )}
+        
+            <QuickFilteringGrid data={horas} columns={columns} />
+                
       </div>
 
     </>

@@ -55,10 +55,6 @@ const EditarHoraForm = (props) => {
   const [id, setId] = useState(location.state.id);
   let history = useHistory();
 
-  const handleChange = (newValue) => {
-     //setValue(newValue);
-  };
-
   const editarHora = () => {
     const requestOptions = {
       method: 'PATCH',
@@ -129,7 +125,6 @@ const EditarHoraForm = (props) => {
                         label="Fecha"
                         inputFormat="dd/MM/yyyy"
                         value={fecha}
-                        onChange={handleChange}
                         defaultValue={location.state.fecha}
                         disabled
                         renderInput={(params) => <TextField {...params} />}
